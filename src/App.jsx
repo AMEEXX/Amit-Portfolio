@@ -4,10 +4,11 @@ import PageLoader from './components/PageLoader';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
+import WorkExperience from './components/WorkExperience';
 import CreateBand from './components/CreateBand';
 import Portfolio from './components/Portfolio';
 import Services from './components/Services';
-import Experience from './components/Experience';
+import Education from './components/Experience';
 import Stats from './components/Stats';
 import Footer from './components/Footer';
 import RequestModal from './components/RequestModal';
@@ -37,13 +38,16 @@ export default function App() {
         {/* Hero Section */}
         <Hero isLoaderFinished={isLoaderFinished} onOpenModal={() => setIsModalOpen(true)} />
 
-        {/* Starfield Container for Mid-Sections — matches original starfield-zone */}
+        {/* Starfield Container for Mid-Sections */}
         <div className="starfield-zone" id="starfieldZone">
           <StarfieldScene />
 
           <TracingBeam className="px-6">
             {/* About */}
             <About />
+
+            {/* Where I've Worked — canvas-reveal cards (Dell + ideaForge) */}
+            <WorkExperience />
 
             {/* CreateBand — Design / Develop / → / Deploy */}
             <CreateBand />
@@ -54,8 +58,8 @@ export default function App() {
             {/* Skills */}
             <Services />
 
-            {/* Experience */}
-            <Experience />
+            {/* Education — IIIT Bhubaneswar */}
+            <Education />
 
             {/* Stats */}
             <Stats />

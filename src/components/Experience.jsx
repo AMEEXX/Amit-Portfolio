@@ -1,22 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { CardSpotlight } from '@/components/ui/card-spotlight';
 
-const EXPERIENCE = [
-  {
-    idx: '2026',
-    title: 'Software Engineer Intern — Dell Technologies',
-    desc: 'Migrated PowerStore VSA to Red Hat OpenShift; reduced VM latency 14.6%, improved throughput 17%.',
-  },
-  {
-    idx: '2025',
-    title: 'Software Engineer Intern — ideaForge Technology',
-    desc: 'Built FlyghtCloud backend processing 100k+ geospatial data points per day with real-time Kafka streaming.',
-  },
-  {
-    idx: '2024',
-    title: 'Harvard PAIR Delegate & SIH Grand Finalist',
-    desc: 'Selected delegate at Harvard PAIR symposium; Grand Finalist at Smart India Hackathon 2024.',
-  },
+const EDUCATION = [
   {
     idx: '2021–2025',
     title: 'B.Tech CSE — IIIT Bhubaneswar',
@@ -24,7 +9,7 @@ const EXPERIENCE = [
   },
 ];
 
-export default function Experience() {
+export default function Education() {
   const [revealedItems, setRevealedItems] = useState({});
   const [headingRevealed, setHeadingRevealed] = useState(false);
   const [eyebrowRevealed, setEyebrowRevealed] = useState(false);
@@ -34,13 +19,12 @@ export default function Experience() {
   useEffect(() => {
     const el = sectionRef.current;
     if (!el) return;
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setEyebrowRevealed(true);
-            EXPERIENCE.forEach((_, i) => {
+            EDUCATION.forEach((_, i) => {
               setTimeout(() => {
                 setRevealedItems((prev) => ({ ...prev, [i]: true }));
               }, i * 80);
@@ -51,7 +35,6 @@ export default function Experience() {
       },
       { threshold: 0.1 }
     );
-
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
@@ -59,7 +42,6 @@ export default function Experience() {
   useEffect(() => {
     const el = headingRef.current;
     if (!el) return;
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -71,29 +53,28 @@ export default function Experience() {
       },
       { threshold: 0.1 }
     );
-
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
   return (
-    <section className="services" id="experience" ref={sectionRef}>
+    <section className="services" id="education" ref={sectionRef}>
       <div className="shell services-inner">
         <div className={`eyebrow eyebrow--dark reveal-item ${eyebrowRevealed ? 'revealed' : ''}`}>
           <span className="eyebrow-dot" />
-          Experience
+          Education
         </div>
 
-        <h2 className="services-h2" id="experienceH2" ref={headingRef}>
+        <h2 className="services-h2" id="educationH2" ref={headingRef}>
           <span className="line-reveal-line">
             <span className={`line-reveal-inner ${headingRevealed ? 'revealed' : ''}`}>
-              Where I've worked
+              Where I studied
             </span>
           </span>
         </h2>
 
-        <ul id="experienceList">
-          {EXPERIENCE.map((item, i) => (
+        <ul id="educationList">
+          {EDUCATION.map((item, i) => (
             <li key={i} className={`service-row-wrap ${revealedItems[i] ? 'revealed' : ''}`} style={{ transitionDelay: `${i * 80}ms` }}>
               <CardSpotlight className="p-0 border-none bg-transparent !rounded-2xl" color="#3d7ab0">
                 <a href="#" className="service-row relative z-20" onClick={(e) => e.preventDefault()}>

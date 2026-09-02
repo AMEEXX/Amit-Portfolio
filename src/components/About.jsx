@@ -21,41 +21,17 @@ export default function About() {
     <section className="about" id="about" ref={sectionRef}>
       <div className="shell about-inner">
 
-        {/* Left column: Globe */}
+        {/* Left column */}
         <motion.div
           className="about-globe"
           initial={{ opacity: 0, y: 48 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 48 }}
           transition={{ duration: 0.8, ease: EASE }}
         >
-          <div className="about-globe-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4">
-              <circle cx="12" cy="12" r="9.25" />
-              <path d="M12 2.75c2.6 2.3 4 5.8 4 9.25s-1.4 6.95-4 9.25c-2.6-2.3-4-5.8-4-9.25s1.4-6.95 4-9.25z" />
-              <path d="M2.75 12h18.5" />
-            </svg>
-          </div>
-
           <div className="eyebrow eyebrow--dark" style={{ position: 'relative' }}>
             <span className="eyebrow-dot" />
             About Me
           </div>
-
-          {/* Location Chip */}
-          <motion.div
-            className="about-globe-text"
-            initial={{ opacity: 0, y: 16 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-            transition={{ duration: 0.6, ease: EASE, delay: 0.3 }}
-            style={{ transition: 'none' }} /* Prevent CSS transition collision */
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4">
-              <circle cx="12" cy="12" r="9.25" />
-              <path d="M12 2.75c2.6 2.3 4 5.8 4 9.25s-1.4 6.95-4 9.25c-2.6-2.3-4-5.8-4-9.25s1.4-6.95 4-9.25z" />
-              <path d="M2.75 12h18.5" />
-            </svg>
-            <span>Based in Bhubaneswar, India — open to remote &amp; relocation.</span>
-          </motion.div>
         </motion.div>
 
         {/* Right column */}
