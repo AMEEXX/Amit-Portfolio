@@ -77,7 +77,7 @@ export default function Education() {
           {EDUCATION.map((item, i) => (
             <li key={i} className={`service-row-wrap ${revealedItems[i] ? 'revealed' : ''}`} style={{ transitionDelay: `${i * 80}ms` }}>
               <CardSpotlight className="p-0 border-none bg-transparent !rounded-2xl" color="#3d7ab0">
-                <a href="#" className="service-row relative z-20" onClick={(e) => e.preventDefault()}>
+                <a href="https://www.iiit-bh.ac.in/" target="_blank" rel="noopener noreferrer" className="service-row relative z-20">
                   <span className="service-index">{item.idx}</span>
                   <h3 className="service-title">{item.title}</h3>
                   <p className="service-desc">{item.desc}</p>

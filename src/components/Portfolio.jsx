@@ -1,144 +1,93 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { CometCard } from '@/components/ui/comet-card';
+import { motion, useInView } from 'motion/react';
 
 const PROJECTS = [
   {
-    name: 'FlyghtCloud Platform',
-    cat: 'Backend',
-    year: '2025',
-    desc: 'Cloud-based drone platform backend processing 100k+ geospatial data points daily with real-time streaming.',
-    tags: ['Java', 'Spring Boot', 'Kafka', 'FastAPI'],
+    name: 'AI Attendance Tracker',
+    tag: '#AI-VISION',
+    desc: 'An AI-based attendance tracker app utilizing facial recognition.',
+    img: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?q=80&w=1287&auto=format&fit=crop',
     link: '#',
   },
   {
     name: 'Future Vault',
-    cat: 'Full Stack',
-    year: '2026',
-    desc: 'A time-capsule app for scheduled notes with event-driven processing and cloud-native deployment.',
-    tags: ['Spring Boot', 'Rust', 'Docker', 'Kubernetes'],
+    tag: '#CLOUD-NATIVE',
+    desc: 'A time-capsule app for scheduled notes with event-driven processing.',
+    img: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1287&auto=format&fit=crop',
     link: '#',
   },
   {
     name: 'AI Agent Marketplace',
-    cat: 'AI Platform',
-    year: '2025',
-    desc: 'A generative AI platform to discover, deploy, and interact with 100+ autonomous AI agents.',
-    tags: ['LangChain', 'React', 'Spring Boot', 'Kafka'],
+    tag: '#GEN-AI',
+    desc: 'Discover, deploy, and interact with autonomous AI agents.',
+    img: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1287&auto=format&fit=crop',
     link: '#',
-  },
-  {
-    name: 'PowerStore VSA',
-    cat: 'Cloud & DevOps',
-    year: '2026',
-    desc: 'Migrated VMware ESXi workloads to Red Hat OpenShift, reducing VM latency by 14.6%.',
-    tags: ['Kubernetes', 'OpenShift', 'Jenkins', 'Python'],
-    link: '#',
-  },
+  }
 ];
 
 export default function Portfolio() {
-  const [revealedItems, setRevealedItems] = useState({});
-  const [headingRevealed, setHeadingRevealed] = useState(false);
   const sectionRef = useRef(null);
-  const headingRef = useRef(null);
-
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            PROJECTS.forEach((_, i) => {
-              setTimeout(() => {
-                setRevealedItems((prev) => ({ ...prev, [i]: true }));
-              }, i * 90);
-            });
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const el = headingRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setHeadingRevealed(true);
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+  const isInView = useInView(sectionRef, { once: true, margin: '0px 0px -10% 0px' });
 
   return (
-    <section className="portfolio" id="works" ref={sectionRef}>
+    <section className="portfolio" id="works" ref={sectionRef} style={{ padding: '5rem 0' }}>
       <div className="shell portfolio-inner">
-        <div className="portfolio-header">
-          <h2 className="portfolio-h2" id="portfolioH2" ref={headingRef}>
+        <div className="portfolio-header" style={{ textAlign: 'center', marginBottom: '3rem' }}>
+          <motion.h2 
+            className="portfolio-h2" 
+            style={{ textAlign: 'center', maxWidth: 'none', width: '100%', margin: '0 auto' }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
+          >
             <span className="line-reveal-line">
-              <span className={`line-reveal-inner ${headingRevealed ? 'revealed' : ''}`}>Things I've Built</span>
+              <span className="line-reveal-inner revealed">Things I've Built</span>
             </span>
-          </h2>
+          </motion.h2>
         </div>
 
-        <ul className="portfolio-grid">
+        {/* 3 cards in a single line */}
+        <motion.div 
+          className="flex flex-col xl:flex-row items-center justify-center gap-8 mx-auto w-full max-w-[90rem]"
+          initial={{ opacity: 0, y: 32 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.18 }}
+        >
           {PROJECTS.map((item, i) => (
-            <li
-              key={i}
-              className={`portfolio-card-wrap ${revealedItems[i] ? 'revealed' : ''}`}
-            >
-              <a href={item.link}>
-                <article className="portfolio-card">
-                  <div className="portfolio-card-meta">
-                    <span>
-                      {item.cat} — {item.year}
-                    </span>
-                    <span className="portfolio-card-badge">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M7 17L17 7" />
-                        <path d="M8 7h9v9" />
-                      </svg>
-                    </span>
+            <CometCard key={i}>
+              <a
+                href={item.link}
+                className="my-6 flex w-[28rem] max-w-full cursor-pointer flex-col items-stretch rounded-[24px] border-0 bg-[#1F2121] p-4 saturate-0 md:my-10 md:p-6 no-underline transition-all hover:saturate-100"
+                aria-label={`View project ${item.name}`}
+                style={{
+                  transformStyle: "preserve-3d",
+                  transform: "none",
+                  opacity: 1,
+                }}
+              >
+                <div className="mx-2 flex-1">
+                  <div className="relative mt-2 aspect-[3/4] w-full">
+                    <img
+                      loading="lazy"
+                      className="absolute inset-0 h-full w-full rounded-[18px] bg-[#000000] object-cover contrast-75"
+                      alt={item.name}
+                      src={item.img}
+                      style={{
+                        boxShadow: "rgba(0, 0, 0, 0.05) 0px 5px 6px 0px",
+                        opacity: 1,
+                      }}
+                    />
                   </div>
-
-                  <div className="portfolio-card-center">
-                    <div className="portfolio-card-logo">
-                      <svg viewBox="0 0 48 48" fill="currentColor">
-                        <path d="M24 2c2.2 13.8 7.9 19.6 22 22-14.1 2.4-19.8 8.2-22 22-2.2-13.8-7.9-19.6-22-22 14.1-2.4 19.8-8.2 22-22Z" />
-                      </svg>
-                      <span className="reg">®</span>
-                    </div>
-                  </div>
-
-                  <div className="portfolio-card-bottom">
-                    <h3>{item.name}</h3>
-                    <p>{item.desc}</p>
-                    <div className="portfolio-tags">
-                      {item.tags.map((t, idx) => (
-                        <span key={idx} className="tag-chip">
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </article>
+                </div>
+                <div className="mt-4 flex flex-shrink-0 items-center justify-between p-4 font-mono text-white">
+                  <div className="text-sm md:text-base truncate mr-2 font-bold">{item.name}</div>
+                  <div className="text-xs md:text-sm text-emerald-400 font-semibold">{item.tag}</div>
+                </div>
               </a>
-            </li>
+            </CometCard>
           ))}
-        </ul>
+        </motion.div>
       </div>
     </section>
   );

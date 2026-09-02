@@ -149,9 +149,9 @@ export default function RequestModal({ isOpen, onClose }) {
             </div>
             <h4 className="success-title">Message sent!</h4>
             <p className="success-desc">Thanks for reaching out. I'll get back to you shortly.</p>
-            <button className="pill-btn" type="button" onClick={handleResetAndClose}>
-              <span className="pill-inner pill-inner--dark pill-inner--no-arrow">Done</span>
-            </button>
+            <a className="pill-btn" href="https://mail.google.com/mail/?view=cm&fs=1&to=amitkumarhotaofficial@gmail.com" target="_blank" rel="noopener noreferrer">
+              <span className="pill-inner pill-inner--dark pill-inner--no-arrow">Email me directly</span>
+            </a>
           </div>
         )}
       </div>

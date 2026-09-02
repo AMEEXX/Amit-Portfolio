@@ -96,18 +96,6 @@ export default function WorkExperience() {
   return (
     <section ref={sectionRef} id="work-experience" style={{ padding: '5rem 0' }}>
       <div className="shell">
-        {/* Eyebrow — centered */}
-        <motion.div
-          className="eyebrow eyebrow--dark"
-          style={{ justifyContent: 'center' }}
-          initial={{ opacity: 0, y: 12 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <span className="eyebrow-dot" />
-          Experience
-        </motion.div>
-
         {/* Heading — centered */}
         <motion.h2
           className="services-h2"

@@ -263,7 +263,7 @@ img {
 }
 
 .navbar-shell.is-condensed .navbar-pill {
-  max-width: 38rem;
+  max-width: 42rem;
   background: transparent;
   border-color: rgba(255, 255, 255, 0.25);
   box-shadow: none;

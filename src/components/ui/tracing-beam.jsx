@@ -13,7 +13,7 @@ export const TracingBeam = ({ children, className }) => {
   // Track scroll progress of the whole container (from its top to its bottom)
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start center", "end end"],
+    offset: ["start start", "end start"],
   });
 
   const contentRef = useRef(null);

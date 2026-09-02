@@ -106,9 +106,10 @@ export default function Footer({ onOpenModal }) {
           <div className="footer-col">
             <div className="footer-col-title">Social</div>
             <ul>
-              <li><a href="https://github.com/AmitKumarHota" target="_blank" rel="noopener noreferrer"><span className="animated-link">GitHub</span></a></li>
-              <li><a href="https://linkedin.com/in/amitkumarhota" target="_blank" rel="noopener noreferrer"><span className="animated-link">LinkedIn</span></a></li>
-              <li><a href="mailto:amitkumarhotaiiit@gmail.com"><span className="animated-link">Email</span></a></li>
+              <li><a href="https://github.com/AMEEXX" target="_blank" rel="noopener noreferrer"><span className="animated-link">GitHub</span></a></li>
+              <li><a href="https://www.linkedin.com/in/amit-kumar-hota/" target="_blank" rel="noopener noreferrer"><span className="animated-link">LinkedIn</span></a></li>
+              <li><a href="https://www.instagram.com/the.amit.hota" target="_blank" rel="noopener noreferrer"><span className="animated-link">Instagram</span></a></li>
+              <li><a href="https://mail.google.com/mail/?view=cm&fs=1&to=amitkumarhotaofficial@gmail.com" target="_blank" rel="noopener noreferrer"><span className="animated-link">Email</span></a></li>
             </ul>
           </div>
         </div>
