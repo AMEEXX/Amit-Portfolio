@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import LiquidRevealCanvas from './effects/LiquidRevealCanvas';
 import EncryptedText from './effects/EncryptedText';
+import { GradientButton } from '@/components/ui/gradient-button';
 
 export default function Hero({ isLoaderFinished, onOpenModal }) {
   const containerRef = useRef(null);
@@ -61,35 +62,31 @@ export default function Hero({ isLoaderFinished, onOpenModal }) {
           </h1>
 
           <div className={`hero-ctas ${isLoaderFinished ? 'revealed' : ''}`} id="heroCtas">
-            <button className="pill-btn" type="button" onClick={onOpenModal}>
-              <span className="pill-inner pill-inner--dark pill-inner--arrow">
-                Get in touch
-                <span className="pill-arrow-badge">
-                  <svg className="arrow-up-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M7 17L17 7" />
-                    <path d="M8 7h9v9" />
-                  </svg>
-                </span>
+            <GradientButton onClick={onOpenModal}>
+              Get in touch
+              <span className="ml-1.5 inline-block transition-transform duration-300 group-hover:rotate-45">
+                <svg className="arrow-up-right w-4 h-4 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M7 17L17 7" />
+                  <path d="M8 7h9v9" />
+                </svg>
               </span>
-            </button>
+            </GradientButton>
 
-            <a
-              className="pill-btn"
-              id="heroWorkBtn"
-              href="https://drive.google.com/file/d/122eIzLXN4gWJ41f37FVfD3_m3afleYT-/view?usp=drive_link"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span className="pill-inner pill-inner--outline pill-inner--arrow">
+            <GradientButton variant="variant" asChild>
+              <a
+                href="https://drive.google.com/file/d/122eIzLXN4gWJ41f37FVfD3_m3afleYT-/view?usp=drive_link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Resume
-                <span className="pill-arrow-badge">
-                  <svg className="arrow-up-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <span className="ml-1.5 inline-block transition-transform duration-300 group-hover:rotate-45">
+                  <svg className="arrow-up-right w-4 h-4 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M7 17L17 7" />
                     <path d="M8 7h9v9" />
                   </svg>
                 </span>
-              </span>
-            </a>
+              </a>
+            </GradientButton>
           </div>
         </div>
         <div className="hero-right" />

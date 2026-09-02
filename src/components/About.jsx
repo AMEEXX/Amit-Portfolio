@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { motion, useInView } from 'motion/react';
 import { FloatingDock } from '@/components/ui/floating-dock';
+import { Button03 } from '@/components/ui/pixel-broke-button';
 
 const MAIN_TEXT = "I build scalable backend systems and cloud-native applications";
 const MUTED_TEXT = "with Java, Python, Spring Boot, Kubernetes, and a competitive edge forged in global contests.";
@@ -68,7 +69,6 @@ export default function About() {
             style={{ transition: 'none' }} /* Prevent CSS transition collision */
           >
             <div>
-              <div className="about-footer-label">Find me online</div>
               <FloatingDock
                 items={[
                   {
@@ -115,22 +115,10 @@ export default function About() {
                 mobileClassName="!bg-transparent"
               />
             </div>
-            <a
-              className="pill-btn"
+            <Button03
+              text="Resume"
               href="https://drive.google.com/file/d/122eIzLXN4gWJ41f37FVfD3_m3afleYT-/view?usp=drive_link"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span className="pill-inner pill-inner--outline pill-inner--arrow">
-                Resume
-                <span className="pill-arrow-badge">
-                  <svg className="arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M5 12h14" />
-                    <path d="M13 6l6 6-6 6" />
-                  </svg>
-                </span>
-              </span>
-            </a>
+            />
           </motion.div>
         </div>
       </div>
