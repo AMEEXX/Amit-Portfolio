@@ -1,7 +1,147 @@
+/**
+ * CanvasRevealEffect — High-fidelity 2D Canvas rewrite.
+ *
+ * The original used @react-three/fiber (<Canvas> = a WebGL context per card).
+ * Combined with Spline (1 WebGL ctx) + StarfieldScene (1 WebGL ctx), the
+ * browser hits its hard WebGL context limit (~8-16) and crashes EVERYTHING.
+ *
+ * This version reproduces the exact same animated dot-matrix using the 2D
+ * Canvas API. Same visual effect, zero WebGL contexts.
+ */
+
+import React, { useEffect, useRef, useCallback } from 'react';
 import { cn } from '@/lib/utils';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import React, { useMemo, useRef } from 'react';
-import * as THREE from 'three';
+
+// ── PHI-based random matching the original GLSL ───────────────────────────────
+const PHI = 1.6180339887498948;
+function random(x, y) {
+  const d = Math.sqrt((x * PHI - x) ** 2 + (y * PHI - y) ** 2);
+  return Math.abs(Math.tan(d * 0.5) * x) % 1;
+}
+
+// ── DotMatrixCanvas ───────────────────────────────────────────────────────────
+function DotMatrixCanvas({
+  colors = [[0, 255, 255]],
+  opacities = [0.3, 0.3, 0.3, 0.5, 0.5, 0.5, 0.8, 0.8, 0.8, 1],
+  animationSpeed = 0.4,
+  dotSize = 3,
+  totalSize = 4,
+}) {
+  const canvasRef = useRef(null);
+  const rafRef = useRef(null);
+  const startRef = useRef(null);
+
+  // Build a 6-colour array matching the original GLSL u_colors logic
+  const colorsArray = React.useMemo(() => {
+    if (colors.length === 1) return [colors[0], colors[0], colors[0], colors[0], colors[0], colors[0]];
+    if (colors.length === 2) return [colors[0], colors[0], colors[0], colors[1], colors[1], colors[1]];
+    return [colors[0], colors[0], colors[1], colors[1], colors[2], colors[2]];
+  }, [colors]);
+
+  const draw = useCallback((ts) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    if (startRef.current === null) startRef.current = ts;
+    const uTime = (ts - startRef.current) / 1000;
+
+    const W = canvas.width;
+    const H = canvas.height;
+
+    ctx.clearRect(0, 0, W, H);
+
+    const cols = Math.ceil(W / totalSize);
+    const rows = Math.ceil(H / totalSize);
+
+    // Center offsets matching GLSL
+    const offX = Math.abs(Math.floor(((W % totalSize) - dotSize) * 0.5));
+    const offY = Math.abs(Math.floor(((H % totalSize) - dotSize) * 0.5));
+
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        const stX = col * totalSize - offX;
+        const stY = row * totalSize - offY;
+
+        if (stX < 0 || stY < 0) continue;
+
+        // st2 = grid coordinates
+        const st2x = col;
+        const st2y = row;
+
+        // Frequency-based random (matches GLSL)
+        const frequency = 5.0;
+        const showOffset = random(st2x, st2y);
+        const randVal = random(
+          st2x * Math.floor(uTime / frequency + showOffset + frequency) + 1.0,
+          st2y * Math.floor(uTime / frequency + showOffset + frequency) + 1.0
+        );
+
+        let opacity = opacities[Math.min(Math.floor(randVal * 10), 9)] ?? 0.5;
+
+        // Dot mask (only draw if within the dot portion of the cell)
+        // Already handled by drawing fixed-size dots at cell origins
+
+        // Pick colour from the 6-element palette
+        const colorIdx = Math.min(Math.floor(showOffset * 6), 5);
+        const [r, g, b] = colorsArray[colorIdx];
+
+        // Animation: intro_offset + step logic from original GLSL
+        const dx = (W / 2) / totalSize - st2x;
+        const dy = (H / 2) / totalSize - st2y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const introOffset = dist * 0.01 + random(st2x, st2y) * 0.15;
+        const t = uTime * animationSpeed;
+
+        // step(introOffset, t) — dot hasn't appeared yet
+        if (t < introOffset) continue;
+
+        // clamp((1 - step(introOffset + 0.1, t)) * 1.25, 1, 1.25)
+        const fadeMul = t < introOffset + 0.1 ? 1.25 : 1.0;
+        opacity *= fadeMul;
+
+        ctx.fillStyle = `rgba(${r},${g},${b},${Math.min(opacity, 1)})`;
+        ctx.fillRect(stX, stY, dotSize, dotSize);
+      }
+    }
+
+    rafRef.current = requestAnimationFrame(draw);
+  }, [colorsArray, opacities, animationSpeed, dotSize, totalSize]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    function resize() {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio, 2);
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+    }
+
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas);
+
+    startRef.current = null;
+    rafRef.current = requestAnimationFrame(draw);
+
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      ro.disconnect();
+    };
+  }, [draw]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }}
+    />
+  );
+}
+
+// ── Public API (identical to original) ────────────────────────────────────────
 
 export const CanvasRevealEffect = ({
   animationSpeed = 0.4,
@@ -10,238 +150,19 @@ export const CanvasRevealEffect = ({
   containerClassName,
   dotSize,
   showGradient = true,
-}) => {
-  return (
-    <div className={cn('h-full relative bg-white w-full', containerClassName)}>
-      <div className="h-full w-full">
-        <DotMatrix
-          colors={colors ?? [[0, 255, 255]]}
-          dotSize={dotSize ?? 3}
-          opacities={
-            opacities ?? [0.3, 0.3, 0.3, 0.5, 0.5, 0.5, 0.8, 0.8, 0.8, 1]
-          }
-          shader={`
-              float animation_speed_factor = ${animationSpeed.toFixed(1)};
-              float intro_offset = distance(u_resolution / 2.0 / u_total_size, st2) * 0.01 + (random(st2) * 0.15);
-              opacity *= step(intro_offset, u_time * animation_speed_factor);
-              opacity *= clamp((1.0 - step(intro_offset + 0.1, u_time * animation_speed_factor)) * 1.25, 1.0, 1.25);
-            `}
-          center={['x', 'y']}
-        />
-      </div>
-      {showGradient && (
-        <div className="absolute inset-0 bg-gradient-to-t from-gray-950 to-[84%]" />
-      )}
+}) => (
+  <div className={cn('h-full relative bg-white w-full', containerClassName)}>
+    <div className="h-full w-full relative">
+      <DotMatrixCanvas
+        colors={colors}
+        opacities={opacities}
+        animationSpeed={animationSpeed}
+        dotSize={dotSize ?? 3}
+        totalSize={4}
+      />
     </div>
-  );
-};
-
-const DotMatrix = ({
-  colors = [[0, 0, 0]],
-  opacities = [0.04, 0.04, 0.04, 0.04, 0.04, 0.08, 0.08, 0.08, 0.08, 0.14],
-  totalSize = 4,
-  dotSize = 2,
-  shader = '',
-  center = ['x', 'y'],
-}) => {
-  const uniforms = React.useMemo(() => {
-    let colorsArray = [
-      colors[0], colors[0], colors[0],
-      colors[0], colors[0], colors[0],
-    ];
-    if (colors.length === 2) {
-      colorsArray = [
-        colors[0], colors[0], colors[0],
-        colors[1], colors[1], colors[1],
-      ];
-    } else if (colors.length === 3) {
-      colorsArray = [
-        colors[0], colors[0],
-        colors[1], colors[1],
-        colors[2], colors[2],
-      ];
-    }
-
-    return {
-      u_colors: {
-        value: colorsArray.map((color) => [
-          color[0] / 255,
-          color[1] / 255,
-          color[2] / 255,
-        ]),
-        type: 'uniform3fv',
-      },
-      u_opacities: {
-        value: opacities,
-        type: 'uniform1fv',
-      },
-      u_total_size: {
-        value: totalSize,
-        type: 'uniform1f',
-      },
-      u_dot_size: {
-        value: dotSize,
-        type: 'uniform1f',
-      },
-    };
-  }, [colors, opacities, totalSize, dotSize]);
-
-  return (
-    <Shader
-      source={`
-        precision mediump float;
-        in vec2 fragCoord;
-
-        uniform float u_time;
-        uniform float u_opacities[10];
-        uniform vec3 u_colors[6];
-        uniform float u_total_size;
-        uniform float u_dot_size;
-        uniform vec2 u_resolution;
-        out vec4 fragColor;
-        float PHI = 1.61803398874989484820459;
-        float random(vec2 xy) {
-            return fract(tan(distance(xy * PHI, xy) * 0.5) * xy.x);
-        }
-        float map(float value, float min1, float max1, float min2, float max2) {
-            return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
-        }
-        void main() {
-            vec2 st = fragCoord.xy;
-            ${center.includes('x') ? 'st.x -= abs(floor((mod(u_resolution.x, u_total_size) - u_dot_size) * 0.5));' : ''}
-            ${center.includes('y') ? 'st.y -= abs(floor((mod(u_resolution.y, u_total_size) - u_dot_size) * 0.5));' : ''}
-      float opacity = step(0.0, st.x);
-      opacity *= step(0.0, st.y);
-
-      vec2 st2 = vec2(int(st.x / u_total_size), int(st.y / u_total_size));
-
-      float frequency = 5.0;
-      float show_offset = random(st2);
-      float rand = random(st2 * floor((u_time / frequency) + show_offset + frequency) + 1.0);
-      opacity *= u_opacities[int(rand * 10.0)];
-      opacity *= 1.0 - step(u_dot_size / u_total_size, fract(st.x / u_total_size));
-      opacity *= 1.0 - step(u_dot_size / u_total_size, fract(st.y / u_total_size));
-
-      vec3 color = u_colors[int(show_offset * 6.0)];
-
-      ${shader}
-
-      fragColor = vec4(color, opacity);
-      fragColor.rgb *= fragColor.a;
-        }`}
-      uniforms={uniforms}
-      maxFps={60}
-    />
-  );
-};
-
-const ShaderMaterial = ({
-  source,
-  uniforms,
-  maxFps = 60,
-}) => {
-  const { size } = useThree();
-  const ref = useRef(null);
-  let lastFrameTime = 0;
-
-  useFrame(({ clock }) => {
-    if (!ref.current) return;
-    const timestamp = clock.getElapsedTime();
-    if (timestamp - lastFrameTime < 1 / maxFps) {
-      return;
-    }
-    lastFrameTime = timestamp;
-
-    const material = ref.current.material;
-    const timeLocation = material.uniforms.u_time;
-    timeLocation.value = timestamp;
-  });
-
-  const getUniforms = () => {
-    const preparedUniforms = {};
-
-    for (const uniformName in uniforms) {
-      const uniform = uniforms[uniformName];
-
-      switch (uniform.type) {
-        case 'uniform1f':
-          preparedUniforms[uniformName] = { value: uniform.value, type: '1f' };
-          break;
-        case 'uniform3f':
-          preparedUniforms[uniformName] = {
-            value: new THREE.Vector3().fromArray(uniform.value),
-            type: '3f',
-          };
-          break;
-        case 'uniform1fv':
-          preparedUniforms[uniformName] = { value: uniform.value, type: '1fv' };
-          break;
-        case 'uniform3fv':
-          preparedUniforms[uniformName] = {
-            value: uniform.value.map((v) =>
-              new THREE.Vector3().fromArray(v)
-            ),
-            type: '3fv',
-          };
-          break;
-        case 'uniform2f':
-          preparedUniforms[uniformName] = {
-            value: new THREE.Vector2().fromArray(uniform.value),
-            type: '2f',
-          };
-          break;
-        default:
-          console.error(`Invalid uniform type for '${uniformName}'.`);
-          break;
-      }
-    }
-
-    preparedUniforms['u_time'] = { value: 0, type: '1f' };
-    preparedUniforms['u_resolution'] = {
-      value: new THREE.Vector2(size.width * 2, size.height * 2),
-    };
-    return preparedUniforms;
-  };
-
-  const material = useMemo(() => {
-    const materialObject = new THREE.ShaderMaterial({
-      vertexShader: `
-      precision mediump float;
-      in vec2 coordinates;
-      uniform vec2 u_resolution;
-      out vec2 fragCoord;
-      void main(){
-        float x = position.x;
-        float y = position.y;
-        gl_Position = vec4(x, y, 0.0, 1.0);
-        fragCoord = (position.xy + vec2(1.0)) * 0.5 * u_resolution;
-        fragCoord.y = u_resolution.y - fragCoord.y;
-      }
-      `,
-      fragmentShader: source,
-      uniforms: getUniforms(),
-      glslVersion: THREE.GLSL3,
-      blending: THREE.CustomBlending,
-      blendSrc: THREE.SrcAlphaFactor,
-      blendDst: THREE.OneFactor,
-    });
-
-    return materialObject;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [size.width, size.height, source]);
-
-  return (
-    <mesh ref={ref}>
-      <planeGeometry args={[2, 2]} />
-      <primitive object={material} attach="material" />
-    </mesh>
-  );
-};
-
-const Shader = ({ source, uniforms, maxFps = 60 }) => {
-  return (
-    <Canvas className="absolute inset-0 h-full w-full">
-      <ShaderMaterial source={source} uniforms={uniforms} maxFps={maxFps} />
-    </Canvas>
-  );
-};
+    {showGradient && (
+      <div className="absolute inset-0 bg-gradient-to-t from-gray-950 to-[84%]" />
+    )}
+  </div>
+);
