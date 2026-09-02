@@ -1,0 +1,185 @@
+/* src/components/boot-terminal/boot-terminal.css */
+
+.boot-terminal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background-color: #08080a; /* Classy pure shade of black - zero blue tint */
+  color: #ffffff;
+  font-family: 'JetBrains Mono', 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Dead-center vertically */
+  align-items: center;     /* Dead-center horizontally */
+  padding: 2rem;
+  overflow: hidden;
+  user-select: none;
+  cursor: pointer;
+  
+  /* GPU acceleration setup */
+  transform-origin: center center;
+  will-change: transform, opacity, filter, clip-path;
+  transition: filter 0.1s ease, transform 0.4s ease-in-out, opacity 0.2s ease, clip-path 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Faint, blackish CRT scanline overlay - ZERO blue tint */
+.boot-terminal-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    rgba(0, 0, 0, 0) 50%,
+    rgba(0, 0, 0, 0.45) 50%
+  );
+  background-size: 100% 4px;
+  z-index: 100;
+  opacity: 0.95;
+}
+
+/* Black Vignette Edge */
+.boot-terminal-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at center, transparent 40%, rgba(0, 0, 0, 0.85) 100%);
+  z-index: 101;
+}
+
+/* Mute toggle button top right */
+.boot-mute-btn {
+  position: absolute;
+  top: 2rem;
+  right: 2.5rem;
+  z-index: 200;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.6);
+  border-radius: 9999px;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.boot-mute-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Terminal Content Box — Stable centered container (eliminates horizontal layout jump) */
+.boot-terminal-content {
+  position: relative;
+  z-index: 150; /* Sits above scanlines */
+  width: 100%;
+  max-width: 32rem;
+  text-align: left; /* Left align command lines inside centered block */
+  margin: 0 auto;
+}
+
+/* Script Lines — Smooth Entry Animation & Crisp White Authentic Terminal Typography */
+.boot-line {
+  margin-bottom: 0.65rem; /* Comfortable gap between lines */
+  line-height: 1.5;
+  font-size: 1.05rem;
+  animation: boot-line-appear 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes boot-line-appear {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.boot-line--cmd {
+  color: #ffffff; /* Crisp white command text */
+  font-weight: 500;
+}
+
+.boot-prompt-symbol {
+  color: #62a2d8; /* Subtle accent prompt symbol */
+  margin-right: 0.65rem;
+  font-weight: 600;
+}
+
+.boot-line--out {
+  color: rgba(255, 255, 255, 0.85); /* Clean white terminal output text */
+  font-size: 0.975rem;
+  padding-left: 1.25rem;
+}
+
+/* Solid Blinking Block Cursor ▊ in White */
+.boot-cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1.1em;
+  background-color: #ffffff;
+  vertical-align: -0.15em;
+  margin-left: 0.35rem;
+  animation: boot-cursor-blink 0.8s infinite steps(2, start);
+}
+
+@keyframes boot-cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Skip hint */
+.boot-skip-hint {
+  position: absolute;
+  bottom: 2rem;
+  z-index: 150;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* CRT Exit Transitions — Clean Collapse */
+.boot-terminal-overlay.phase-flash {
+  /* Clean transition */
+}
+
+.boot-terminal-overlay.phase-collapse-v {
+  transform: scaleY(0.02);
+}
+
+.boot-terminal-overlay.phase-collapse-h {
+  transform: scaleY(0.002) scaleX(0);
+}
+
+.boot-terminal-overlay.phase-beat {
+  opacity: 0;
+  transform: scale(0);
+}
+
+.boot-terminal-overlay.phase-iris-reveal {
+  opacity: 0;
+  pointer-events: none;
+  clip-path: circle(0% at 50% 50%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boot-terminal-overlay {
+    transition: opacity 0.3s ease !important;
+  }
+  .boot-terminal-overlay.phase-flash,
+  .boot-terminal-overlay.phase-collapse-v,
+  .boot-terminal-overlay.phase-collapse-h,
+  .boot-terminal-overlay.phase-beat,
+  .boot-terminal-overlay.phase-iris-reveal {
+    transform: none !important;
+    filter: none !important;
+    clip-path: none !important;
+    opacity: 0 !important;
+  }
+}
