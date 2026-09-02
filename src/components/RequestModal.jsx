@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { GradientButton } from '@/components/ui/gradient-button';
 
 export default function RequestModal({ isOpen, onClose }) {
   const [formState, setFormState] = useState({
@@ -127,17 +128,15 @@ export default function RequestModal({ isOpen, onClose }) {
                 />
               </div>
 
-              <button className="pill-btn form-submit" type="submit" disabled={isSubmitting}>
-                <span className="pill-inner pill-inner--dark pill-inner--arrow">
-                  <span>{isSubmitting ? 'Sending…' : 'Send message'}</span>
-                  <span className="pill-arrow-badge">
-                    <svg className="arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M5 12h14" />
-                      <path d="M13 6l6 6-6 6" />
-                    </svg>
-                  </span>
+              <GradientButton type="submit" disabled={isSubmitting} className="w-full mt-4">
+                <span>{isSubmitting ? 'Sending…' : 'Send message'}</span>
+                <span className="ml-2 inline-block transition-transform duration-300 group-hover:translate-x-1">
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M5 12h14" />
+                    <path d="M13 6l6 6-6 6" />
+                  </svg>
                 </span>
-              </button>
+              </GradientButton>
             </form>
           </div>
         ) : (

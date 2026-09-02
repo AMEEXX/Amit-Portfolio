@@ -1867,13 +1867,31 @@ img {
   border-radius: 2rem;
   background: #fff;
   padding: 1.5rem;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 40px rgba(16, 185, 129, 0.08);
   outline: 1px solid #e6e5e2;
   color: #111;
   transform: translateY(48px) scale(0.94);
   opacity: 0;
   filter: blur(8px);
   transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1), filter 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.modal-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #10b981, #059669, #34d399, #10b981);
+  background-size: 200% 100%;
+  animation: modal-gradient-shift 4s ease infinite;
+}
+
+@keyframes modal-gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 @media (min-width: 640px) {

@@ -14,6 +14,7 @@ import Footer from './components/Footer';
 import RequestModal from './components/RequestModal';
 import StarfieldScene from './components/effects/StarfieldScene';
 import { TracingBeam } from '@/components/ui/tracing-beam';
+import KeyboardShowcase from './components/keyboard-showcase';
 
 export default function App() {
   useLenis();
@@ -54,6 +55,9 @@ export default function App() {
 
             {/* Portfolio */}
             <Portfolio />
+
+            {/* 3D Skills Keyboard — scroll-driven, self-contained */}
+            <KeyboardShowcase />
 
             {/* Skills */}
             <Services />
