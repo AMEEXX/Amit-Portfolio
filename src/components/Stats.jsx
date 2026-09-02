@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 
 const STATS_DATA = [
-  { value: 1884, suffix: '', label: 'Codeforces max rating' },
-  { value: 17, suffix: '%', label: 'Performance improved' },
-  { value: 5000, suffix: '+', label: 'Flight hours supported' },
-  { value: 6, suffix: '+', label: 'Hackathon wins' },
+  { value: 900, suffix: '+', label: 'Problems solved' },
+  { value: 1900, suffix: '', label: 'LeetCode rating' },
+  { value: 1800, suffix: '', label: 'Codeforces rating' },
+  { value: 6, suffix: '+', label: 'Hackathon finalist' },
 ];
 
 export default function Stats() {

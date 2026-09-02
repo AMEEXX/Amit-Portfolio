@@ -269,8 +269,22 @@ export default function KeyboardShowcase() {
         <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", margin: "0 0 0.5rem" }}>
           Scroll to reveal · hover to explore
         </p>
-        <h2 style={{ fontSize: "clamp(1.5rem, 4vw, 2.5rem)", fontWeight: 700, color: "#fff", margin: 0, lineHeight: 1.1 }}>
-          Skills &amp; Tools
+        <h2 style={{
+          fontFamily: "inherit",
+          fontSize: "clamp(2.25rem, 5vw, 4rem)",
+          fontWeight: 600,
+          letterSpacing: "-0.02em",
+          color: "#fff",
+          margin: 0,
+          lineHeight: 1.05,
+          maxWidth: "56rem",
+          marginLeft: "auto",
+          marginRight: "auto",
+          padding: "0 1rem",
+        }}>
+          <span className="line-reveal-line">
+            <span className="line-reveal-inner revealed">Tools &amp; Skills</span>
+          </span>
         </h2>
       </div>
 

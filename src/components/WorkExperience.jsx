@@ -25,7 +25,7 @@ const Card = ({ title, subtitle, description, logoSrc, logoAlt, logoStyle, child
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="border border-white/[0.2] group/canvas-card flex items-center justify-center max-w-md w-full mx-auto p-6 relative h-[36rem]"
+      className="border border-white/[0.2] group/canvas-card flex items-center justify-center max-w-md w-full mx-auto p-6 relative h-[42rem]"
     >
       {/* Exact corner icons from demo */}
       <Icon className="absolute h-6 w-6 -top-3 -left-3 text-white" />

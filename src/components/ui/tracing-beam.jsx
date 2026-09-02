@@ -10,32 +10,35 @@ import { cn } from "@/lib/utils";
 export const TracingBeam = ({ children, className }) => {
   const ref = useRef(null);
 
-  // Track scroll progress of the whole container (from its top to its bottom)
+  // Track scroll progress of the whole container
+  // "start start": Progress is 0 when container top hits viewport top
+  // "end end": Progress is 1 when container bottom hits viewport bottom
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start start", "end start"],
+    offset: ["start start", "end end"],
   });
 
   const contentRef = useRef(null);
   const [svgHeight, setSvgHeight] = useState(0);
 
   useEffect(() => {
-    const measure = () => {
-      if (contentRef.current) {
-        setSvgHeight(contentRef.current.offsetHeight);
+    if (!contentRef.current) return;
+    const ro = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        setSvgHeight(entry.target.offsetHeight);
       }
-    };
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
+    });
+    ro.observe(contentRef.current);
+    return () => ro.disconnect();
   }, []);
 
+  // Map 0 -> 1 progress perfectly to 0 -> svgHeight so it doesn't race ahead
   const y1 = useSpring(
-    useTransform(scrollYProgress, [0, 0.8], [50, svgHeight]),
+    useTransform(scrollYProgress, [0, 1], [0, svgHeight]),
     { stiffness: 500, damping: 90 }
   );
   const y2 = useSpring(
-    useTransform(scrollYProgress, [0, 1], [50, svgHeight - 200]),
+    useTransform(scrollYProgress, [0, 1], [-200, svgHeight - 200]),
     { stiffness: 500, damping: 90 }
   );
 
