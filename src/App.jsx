@@ -59,9 +59,6 @@ export default function App() {
             {/* 3D Skills Keyboard — scroll-driven, self-contained */}
             <KeyboardShowcase />
 
-            {/* Skills */}
-            <Services />
-
             {/* Education — IIIT Bhubaneswar */}
             <Education />
 

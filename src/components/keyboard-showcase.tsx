@@ -14,6 +14,20 @@ gsap.registerPlugin(ScrollTrigger);
 
 // ── Hooks ─────────────────────────────────────────────────────────────────────
 
+function capSplinePixelRatio(app: any, maxDpr: number) {
+  const apply = () => {
+    try {
+      const renderer = app?._renderer;
+      if (renderer?.setPixelRatio) {
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxDpr));
+      }
+    } catch {}
+  };
+  apply();
+  window.addEventListener("resize", apply, { passive: true });
+  return () => window.removeEventListener("resize", apply);
+}
+
 function useInViewport(ref: React.RefObject<HTMLElement>, rootMargin = "600px") {
   const [inView, setInView] = useState(false);
   useEffect(() => {
@@ -63,7 +77,6 @@ function KeyboardScene({ isMobile }: { isMobile: boolean }) {
   const [selectedSkill, setSelectedSkill] = useState<SkillValue | null>(null);
   const selectedSkillRef = useRef<SkillValue | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const keysRevealedRef = useRef(false);
 
   // ── Skill hover / keydown interactions ───────────────────────────────────
   useEffect(() => {
@@ -101,51 +114,31 @@ function KeyboardScene({ isMobile }: { isMobile: boolean }) {
     } catch {}
   }, [selectedSkill, splineApp]);
 
-  // ── Keycap reveal helper (from source repo's updateKeyboardTransform) ─────
-  // The Spline scene stores all keycap objects as invisible by default.
-  // Must call getAllObjects() and toggle visible=true in staggered sequence.
-  const revealKeycaps = async (app: any) => {
-    if (keysRevealedRef.current) return;
-    keysRevealedRef.current = true;
+  // ── Make keys visible immediately & Cap Pixel Ratio ─────────────────────
+  // 1. Toggle keys visible immediately so they appear as part of the keyboard.
+  // 2. Cap the Spline pixel ratio to 1.5 to prevent GPU throttling and jagged 
+  //    edges/broken pixels on retina displays, ensuring hover effects stay smooth.
+  useEffect(() => {
+    if (!splineApp) return;
+    
+    // Cap pixel ratio to ensure smooth performance and prevent aliasing artifacts
+    const cleanupDpr = capSplinePixelRatio(splineApp, 2);
 
-    const allObjects = app.getAllObjects();
-
-    // Reveal the container groups first
-    if (isMobile) {
-      allObjects
-        .filter((o: any) => o.name === "keycap-mobile")
-        .forEach((kc: any) => { kc.visible = true; });
-    } else {
-      const desktopGroups = allObjects.filter((o: any) => o.name === "keycap-desktop");
-      for (let i = 0; i < desktopGroups.length; i++) {
-        await sleep(i * 70);
-        desktopGroups[i].visible = true;
-      }
-    }
-
-    // Then bounce-animate each individual skill keycap
-    const keycaps = allObjects.filter((o: any) => o.name === "keycap");
-    keycaps.forEach(async (keycap: any, idx: number) => {
-      keycap.visible = false;
-      await sleep(idx * 70);
-      keycap.visible = true;
-      gsap.fromTo(
-        keycap.position,
-        { y: 200 },
-        { y: 50, duration: 0.5, delay: 0.1, ease: "bounce.out" }
-      );
-    });
-  };
-
-  const hideKeycaps = (app: any) => {
-    if (!keysRevealedRef.current) return;
-    keysRevealedRef.current = false;
     try {
-      const all = app.getAllObjects();
-      all.filter((o: any) => o.name === "keycap" || o.name === "keycap-desktop" || o.name === "keycap-mobile")
-        .forEach((o: any) => { o.visible = false; });
+      const all = splineApp.getAllObjects();
+      all.forEach((o: any) => {
+        if (o.name === "keycap") {
+          o.visible = true;
+        } else if (o.name === "keycap-desktop") {
+          o.visible = !isMobile;
+        } else if (o.name === "keycap-mobile") {
+          o.visible = isMobile;
+        }
+      });
     } catch {}
-  };
+
+    return cleanupDpr;
+  }, [splineApp, isMobile]);
 
   // ── Three-phase scroll-scrubbed timeline + keycap reveal on settle ────────
   useEffect(() => {
@@ -167,35 +160,12 @@ function KeyboardScene({ isMobile }: { isMobile: boolean }) {
       gsap.set(kbd.position, HIDDEN_POSE.position);
       gsap.set(kbd.rotation, HIDDEN_POSE.rotation);
 
-      // Phase boundary: settle phase starts at progress ~0.55 (1.6/2.9)
-      const SETTLE_PROGRESS = 0.57;
-      let keysTriggered = false;
-
       tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionEl,
           start: "top top",
           end: "bottom top",
           scrub: 0.6,
-          onUpdate: (self) => {
-            // Trigger keycap reveal once keyboard has settled (phase 2 complete)
-            if (self.progress >= SETTLE_PROGRESS && !keysTriggered) {
-              keysTriggered = true;
-              revealKeycaps(splineApp);
-            }
-            // Hide keys again if user scrolls back above the settle point
-            if (self.progress < SETTLE_PROGRESS - 0.05 && keysTriggered) {
-              keysTriggered = false;
-              hideKeycaps(splineApp);
-            }
-          },
-          onLeave: () => {
-            // Section fully scrolled past — reset for re-entry
-          },
-          onLeaveBack: () => {
-            keysTriggered = false;
-            hideKeycaps(splineApp);
-          },
         },
       });
 
@@ -230,21 +200,21 @@ function KeyboardScene({ isMobile }: { isMobile: boolean }) {
         />
 
         {selectedSkill && (
-          <div style={{
-            pointerEvents: "none",
-            position: "absolute",
-            bottom: "2.5rem",
-            left: "50%",
-            transform: "translateX(-50%)",
-            textAlign: "center",
-            zIndex: 10,
-          }}>
-            <p style={{ fontSize: "1.125rem", fontWeight: 600, color: selectedSkill.color, margin: 0, textShadow: `0 0 20px ${selectedSkill.color}60` }}>
-              {selectedSkill.label}
-            </p>
-            <p style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.55)", maxWidth: "20rem", margin: "0.25rem auto 0" }}>
-              {selectedSkill.shortDescription}
-            </p>
+          <div className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center">
+            <div className="flex items-center gap-3 px-6 py-3 rounded-2xl bg-neutral-950/85 backdrop-blur-md border border-white/15 shadow-[0_8px_32px_rgba(0,0,0,0.6)] max-w-sm transition-all duration-300">
+              <span
+                className="w-2.5 h-2.5 rounded-full shrink-0 shadow-sm"
+                style={{ backgroundColor: selectedSkill.color || '#62a2d8' }}
+              />
+              <div className="flex flex-col text-left">
+                <span className="text-white font-semibold text-sm tracking-tight leading-tight">
+                  {selectedSkill.label}
+                </span>
+                <span className="text-neutral-300/80 text-xs mt-0.5 leading-snug font-normal">
+                  {selectedSkill.shortDescription}
+                </span>
+              </div>
+            </div>
           </div>
         )}
       </div>

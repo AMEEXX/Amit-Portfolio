@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 
 const STATS_DATA = [
-  { value: 900, suffix: '+', label: 'Problems solved' },
+  { value: 800, suffix: '+', label: 'Problems solved' },
   { value: 1900, suffix: '', label: 'LeetCode rating' },
   { value: 1800, suffix: '', label: 'Codeforces rating' },
   { value: 6, suffix: '+', label: 'Hackathon finalist' },
@@ -14,8 +14,6 @@ export default function Stats() {
   const [headingRevealed, setHeadingRevealed] = useState(false);
   const sectionRef = useRef(null);
   const headingRef = useRef(null);
-  const countsRef = useRef(counts);
-  countsRef.current = counts;
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -35,7 +33,7 @@ export default function Stats() {
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.15 }
     );
 
     panelObserver.observe(el);
@@ -62,34 +60,33 @@ export default function Stats() {
     return () => observer.disconnect();
   }, []);
 
-  // Scroll-based count-up (matches original behavior)
+  // Smooth count-up animation once section enters viewport
   useEffect(() => {
-    let lastTick = 0;
+    if (!isPanelRevealed) return;
 
-    function updateStats() {
-      const now = performance.now();
-      if (now - lastTick < 30) return;
-      lastTick = now;
+    let startTime = null;
+    const duration = 1600; // 1.6s duration
 
-      const vh = window.innerHeight;
-      const newCounts = STATS_DATA.map((stat) => {
-        const el = document.querySelector(`[data-stat-target="${stat.value}"]`);
-        if (!el) return 0;
-        const rect = el.getBoundingClientRect();
-        const startPos = vh;
-        const endPos = vh / 2;
-        let progress = (startPos - rect.top) / (startPos - endPos + rect.height / 2);
-        progress = Math.max(0, Math.min(1, progress));
-        return Math.round(progress * stat.value);
-      });
+    function animate(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      
+      // Smooth cubic ease-out
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
 
-      setCounts(newCounts);
+      setCounts(STATS_DATA.map((stat) => Math.round(easeProgress * stat.value)));
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
     }
 
-    window.addEventListener('scroll', updateStats, { passive: true });
-    updateStats();
-    return () => window.removeEventListener('scroll', updateStats);
-  }, []);
+    const timer = setTimeout(() => {
+      requestAnimationFrame(animate);
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }, [isPanelRevealed]);
 
   return (
     <section className="stats" ref={sectionRef}>

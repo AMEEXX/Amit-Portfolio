@@ -1539,6 +1539,15 @@ img {
   transform: translateX(5px);
 }
 
+.service-arrow-wrap {
+  display: inline-block;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.service-row:hover .service-arrow-wrap {
+  transform: rotate(45deg);
+}
+
 /* ── Stats Section ── */
 .stats {
   background: #fff;
