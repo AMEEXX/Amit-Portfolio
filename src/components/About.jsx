@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { motion, useInView } from 'motion/react';
 import { FloatingDock } from '@/components/ui/floating-dock';
-import { Button03 } from '@/components/ui/pixel-broke-button';
+import { LiquidGlassButton } from '@/components/ui/liquid-glass-button';
 
 const MAIN_TEXT = "I build scalable backend systems and cloud-native applications";
 const MUTED_TEXT = "with Java, Python, Spring Boot, Kubernetes, and a competitive edge forged in global contests.";
@@ -115,7 +115,7 @@ export default function About() {
                 mobileClassName="!bg-transparent"
               />
             </div>
-            <Button03
+            <LiquidGlassButton
               text="Resume"
               href="https://drive.google.com/file/d/122eIzLXN4gWJ41f37FVfD3_m3afleYT-/view?usp=drive_link"
             />

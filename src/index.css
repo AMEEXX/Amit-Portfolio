@@ -2369,3 +2369,104 @@ img {
   }
 }
 
+/* ── Liquid Glass Button ── */
+@property --liquid-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes liquid-spin {
+  0% {
+    --liquid-angle: 0deg;
+  }
+  100% {
+    --liquid-angle: 360deg;
+  }
+}
+
+.liquid-glass-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 212px;
+  height: 69px;
+  border-radius: 9999px;
+  text-decoration: none;
+  cursor: pointer;
+  background: rgba(10, 10, 10, 0.4); /* Near black, translucent */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.08), inset 0 -1px 2px rgba(0, 0, 0, 0.8);
+  transform: translateZ(0); /* Hardware acceleration */
+}
+
+/* Subdued text */
+.liquid-glass-btn-text {
+  font-size: 18px;
+  font-weight: 400;
+  color: #a3a3a3; /* medium-gray */
+  letter-spacing: 0.01em;
+  z-index: 2;
+  transition: color 0.3s ease;
+}
+
+.liquid-glass-btn:hover .liquid-glass-btn-text {
+  color: #e5e5e5;
+}
+
+/* Sharp specular highlight border */
+.liquid-glass-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  padding: 1px; /* 1px border */
+  background: conic-gradient(
+    from var(--liquid-angle),
+    rgba(255, 255, 255, 0.05) 0deg,
+    rgba(255, 255, 255, 0.05) 260deg,
+    rgba(255, 255, 255, 0.15) 320deg,
+    #e8dcc7 345deg,
+    #ffffff 355deg,
+    rgba(255, 255, 255, 0.05) 360deg
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  animation: liquid-spin 6s linear infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Soft blurred bloom */
+.liquid-glass-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--liquid-angle),
+    transparent 0deg,
+    transparent 300deg,
+    rgba(232, 220, 199, 0.4) 345deg,
+    rgba(255, 255, 255, 0.7) 355deg,
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  filter: blur(4px);
+  animation: liquid-spin 6s linear infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .liquid-glass-btn::before,
+  .liquid-glass-btn::after {
+    animation-play-state: paused;
+  }
+}
