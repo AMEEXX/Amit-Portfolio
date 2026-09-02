@@ -1,0 +1,101 @@
+import React, { useEffect, useState, useRef } from 'react';
+import { CardSpotlight } from '@/components/ui/card-spotlight';
+
+const SERVICES = [
+  { idx: '01', title: 'Backend Engineering', desc: 'Java, Spring Boot, FastAPI, REST APIs & Microservices.' },
+  { idx: '02', title: 'Cloud & DevOps', desc: 'Docker, Kubernetes, CI/CD, AWS, and infrastructure as code.' },
+  { idx: '03', title: 'AI & Automation', desc: 'LLMs, LangChain, RAG, AI Agents, and data pipelines.' },
+  { idx: '04', title: 'Competitive Programming', desc: 'DSA & algorithms — Expert on Codeforces, Knight on LeetCode.' },
+];
+
+export default function Services() {
+  const [revealedItems, setRevealedItems] = useState({});
+  const [headingRevealed, setHeadingRevealed] = useState(false);
+  const [eyebrowRevealed, setEyebrowRevealed] = useState(false);
+  const sectionRef = useRef(null);
+  const headingRef = useRef(null);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setEyebrowRevealed(true);
+            SERVICES.forEach((_, i) => {
+              setTimeout(() => {
+                setRevealedItems((prev) => ({ ...prev, [i]: true }));
+              }, i * 80);
+            });
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const el = headingRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setHeadingRevealed(true);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section className="services" id="services" ref={sectionRef}>
+      <div className="shell services-inner">
+        <div className={`eyebrow eyebrow--dark reveal-item ${eyebrowRevealed ? 'revealed' : ''}`}>
+          <span className="eyebrow-dot" />
+          Skills
+        </div>
+
+        <h2 className="services-h2" id="servicesH2" ref={headingRef}>
+          <span className="line-reveal-line">
+            <span className={`line-reveal-inner ${headingRevealed ? 'revealed' : ''}`}>
+              What I bring
+            </span>
+          </span>
+        </h2>
+
+        <ul id="servicesList">
+          {SERVICES.map((item, i) => (
+            <li key={i} className={`service-row-wrap ${revealedItems[i] ? 'revealed' : ''}`} style={{ transitionDelay: `${i * 80}ms` }}>
+              <CardSpotlight className="p-0 border-none bg-transparent !rounded-2xl" color="#3d7ab0">
+                <a href="#" className="service-row relative z-20">
+                  <span className="service-index">{item.idx}</span>
+                  <h3 className="service-title">{item.title}</h3>
+                  <p className="service-desc">{item.desc}</p>
+                  <span className="service-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M7 17L17 7" />
+                      <path d="M8 7h9v9" />
+                    </svg>
+                  </span>
+                </a>
+              </CardSpotlight>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}

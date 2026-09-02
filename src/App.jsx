@@ -1,0 +1,73 @@
+import React, { useState } from 'react';
+import { useLenis } from './hooks/useLenis';
+import PageLoader from './components/PageLoader';
+import Navbar from './components/Navbar';
+import Hero from './components/Hero';
+import About from './components/About';
+import CreateBand from './components/CreateBand';
+import Portfolio from './components/Portfolio';
+import Services from './components/Services';
+import Experience from './components/Experience';
+import Stats from './components/Stats';
+import Footer from './components/Footer';
+import RequestModal from './components/RequestModal';
+import StarfieldScene from './components/effects/StarfieldScene';
+import { TracingBeam } from '@/components/ui/tracing-beam';
+
+export default function App() {
+  useLenis();
+
+  const [isLoaderFinished, setIsLoaderFinished] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  return (
+    <>
+      <a className="skip-link" href="#main">
+        Skip to content
+      </a>
+
+      {/* Page Loader */}
+      <PageLoader onComplete={() => setIsLoaderFinished(true)} />
+
+      {/* Navbar */}
+      <Navbar onOpenModal={() => setIsModalOpen(true)} />
+
+      {/* Main Content Area */}
+      <main id="main">
+        {/* Hero Section */}
+        <Hero isLoaderFinished={isLoaderFinished} onOpenModal={() => setIsModalOpen(true)} />
+
+        {/* Starfield Container for Mid-Sections — matches original starfield-zone */}
+        <div className="starfield-zone" id="starfieldZone">
+          <StarfieldScene />
+
+          <TracingBeam className="px-6">
+            {/* About */}
+            <About />
+
+            {/* CreateBand — Design / Develop / → / Deploy */}
+            <CreateBand />
+
+            {/* Portfolio */}
+            <Portfolio />
+
+            {/* Skills */}
+            <Services />
+
+            {/* Experience */}
+            <Experience />
+
+            {/* Stats */}
+            <Stats />
+          </TracingBeam>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <Footer onOpenModal={() => setIsModalOpen(true)} />
+
+      {/* Request Modal */}
+      <RequestModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </>
+  );
+}
