@@ -233,7 +233,7 @@ export default function KeyboardShowcase() {
   if (reducedMotion) return null;
 
   return (
-    <section ref={sectionRef as React.RefObject<HTMLElement>} style={{ position: "relative", height: "300vh" }}>
+    <section id="skills" ref={sectionRef as React.RefObject<HTMLElement>} style={{ position: "relative", height: "300vh" }}>
       {/* Section label */}
       <div style={{ position: "absolute", top: "4rem", left: 0, right: 0, textAlign: "center", zIndex: 10, pointerEvents: "none" }}>
         <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", margin: "0 0 0.5rem" }}>

@@ -35,7 +35,7 @@ export default function Footer({ onOpenModal }) {
   };
 
   return (
-    <footer className="site-footer">
+    <footer className="site-footer" id="contact">
       <div className="shell footer-inner">
         {/* Footer CTA */}
         <div className="footer-cta">

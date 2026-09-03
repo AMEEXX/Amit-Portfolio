@@ -60,8 +60,7 @@ export default function About() {
               </React.Fragment>
             ))}
           </h2>
-
-          <motion.div
+        <motion.div
             className="about-footer"
             initial={{ opacity: 0, y: 24 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}

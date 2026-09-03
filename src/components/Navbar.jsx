@@ -10,7 +10,7 @@ export default function Navbar({ onOpenModal }) {
       const y = window.scrollY || document.documentElement.scrollTop || 0;
       setIsCondensed(y > 120);
 
-      const sections = ['home', 'works', 'experience', 'services', 'about', 'contact'];
+      const sections = ['home', 'about', 'work-experience', 'works', 'skills', 'education', 'contact'];
       let current = 'home';
       for (const id of sections) {
         const el = document.getElementById(id);
@@ -57,10 +57,11 @@ export default function Navbar({ onOpenModal }) {
         <nav className="navbar-items" aria-label="Primary">
           {[
             { id: 'home', label: 'Home' },
-            { id: 'works', label: 'Work' },
-            { id: 'experience', label: 'Experience' },
-            { id: 'services', label: 'Skills' },
             { id: 'about', label: 'About' },
+            { id: 'work-experience', label: 'Experience' },
+            { id: 'works', label: 'Work' },
+            { id: 'skills', label: 'Skills' },
+            { id: 'education', label: 'Education' },
             { id: 'contact', label: 'Contact' },
           ].map((item) => (
             <a
@@ -112,10 +113,11 @@ export default function Navbar({ onOpenModal }) {
         <div className="navbar-mobile-sheet">
           {[
             { id: 'home', label: 'Home' },
-            { id: 'works', label: 'Work' },
-            { id: 'experience', label: 'Experience' },
-            { id: 'services', label: 'Skills' },
             { id: 'about', label: 'About' },
+            { id: 'work-experience', label: 'Experience' },
+            { id: 'works', label: 'Work' },
+            { id: 'skills', label: 'Skills' },
+            { id: 'education', label: 'Education' },
             { id: 'contact', label: 'Contact' },
           ].map((item) => (
             <a

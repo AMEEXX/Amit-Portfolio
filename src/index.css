@@ -347,8 +347,7 @@ img {
   pointer-events: none;
 }
 
-.navbar-item:hover::before,
-.navbar-item.is-active::before {
+.navbar-item:hover::before {
   opacity: 1;
   transform: scale(1);
 }
@@ -491,9 +490,12 @@ img {
   transition: background 0.25s;
 }
 
-.navbar-mobile-link:hover,
-.navbar-mobile-link.is-active {
+.navbar-mobile-link:hover {
   background: rgba(17, 17, 17, 0.06);
+  color: #111;
+}
+
+.navbar-mobile-link.is-active {
   color: #111;
 }
 
@@ -1884,23 +1886,7 @@ img {
   transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1), filter 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.modal-panel::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #10b981, #059669, #34d399, #10b981);
-  background-size: 200% 100%;
-  animation: modal-gradient-shift 4s ease infinite;
-}
 
-@keyframes modal-gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
 
 @media (min-width: 640px) {
   .modal-panel {
