@@ -74,7 +74,7 @@ export default function Hero({ isLoaderFinished, onOpenModal }) {
 
             <GradientButton variant="variant" asChild>
               <a
-                href="https://drive.google.com/file/d/122eIzLXN4gWJ41f37FVfD3_m3afleYT-/view?usp=drive_link"
+                href="https://drive.google.com/file/d/1V4nJo9dbEVhRpYUrMPVHSxI_Z3ycBQAw/view?usp=sharing"
                 target="_blank"
                 rel="noopener noreferrer"
               >

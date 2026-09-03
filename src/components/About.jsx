@@ -3,8 +3,8 @@ import { motion, useInView } from 'motion/react';
 import { FloatingDock } from '@/components/ui/floating-dock';
 import { ShinyButton } from '@/components/ui/shiny-button';
 
-const MAIN_TEXT = "I build scalable backend systems and cloud-native applications";
-const MUTED_TEXT = "with Java, Python, Spring Boot, Kubernetes, and a competitive edge forged in global contests.";
+const MAIN_TEXT = "I engineer scalable backend systems and cloud-native applications";
+const MUTED_TEXT = "with Java, Python, Kubernetes, and the MERN stack fusing applied machine learning with a competitive programmer's edge for solving hard problems.";
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -116,7 +116,7 @@ export default function About() {
               />
             </div>
             <ShinyButton
-              href="https://drive.google.com/file/d/122eIzLXN4gWJ41f37FVfD3_m3afleYT-/view?usp=drive_link"
+              href="https://drive.google.com/file/d/1V4nJo9dbEVhRpYUrMPVHSxI_Z3ycBQAw/view?usp=sharing"
               className="mt-8 px-10 py-5 text-[18px] group"
             >
               Resume

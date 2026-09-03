@@ -6,24 +6,35 @@ import { motion, useInView } from 'motion/react';
 
 const PROJECTS = [
   {
+    name: 'Attract',
+    tag: '#AI-VISION',
+    desc: 'A mobile facial recognition app for seamless classroom attendance.',
+    longDesc: 'An innovative AI-powered mobile app designed for teachers. The app is securely pinned on the teacher’s phone and circulated around the classroom. Students snap quick photos of themselves, and the system automatically logs their attendance using advanced facial recognition models.',
+    tech: ['React', 'Python', 'OpenCV', 'TensorFlow', 'PostgreSQL'],
+    img: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?q=80&w=1287&auto=format&fit=crop',
+    link: null,
+    github: 'https://github.com/AMEEXX/Attract-AI-Based-Attendance-Tracker',
+  },
+  {
     name: 'PowerStore VSA on OpenShift',
     tag: '#DELL-INTERN',
     desc: 'Platform migration from VMware ESXi to Red Hat OpenShift.',
-    longDesc: 'Engineered PowerStore VSA platform changes migrating from VMware ESXi to Red Hat OpenShift/Kubernetes. Automated CI/CD workflows using Jenkins, GitLab CI, and GitHub Actions. Reduced VM latency by 14.6% and improved overall performance by 17.2%.',
+    longDesc: 'Engineered PowerStore VSA platform enhancements for virtualized infrastructure, applying Object-Oriented Design, Java, Python, REST APIs, and Microservices. Automated CI/CD workflows across 2 platforms and executed system-level testing, reducing VM latency by 14.6% and improving overall performance by 17.2%.',
     tech: ['Java', 'Python', 'Kubernetes', 'OpenShift', 'Jenkins'],
     img: 'https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?q=80&w=1287&auto=format&fit=crop',
-    link: '#',
-    github: 'https://github.com/AMEEXX',
+    link: null,
+    github: null,
+    internal: 'Dell Proprietary Internal Tool',
   },
   {
-    name: 'FlyghtCloud Platform',
-    tag: '#IDEA-FORGE',
-    desc: 'Cloud-based platform supporting scalable drone flight services.',
-    longDesc: 'Contributed to the cloud-based FlyghtCloud Platform, supporting 5,000+ flight hours through scalable backend services. Built real-time defect-detection pipelines processing 100k+ geospatial points/day with Kafka-based event streaming.',
-    tech: ['Java', 'Python', 'FastAPI', 'Kafka', 'REST APIs'],
-    img: 'https://images.unsplash.com/photo-1508614589041-895b88991e3e?q=80&w=1287&auto=format&fit=crop',
-    link: '#',
-    github: 'https://github.com/AMEEXX',
+    name: 'YourTube',
+    tag: '#PRODUCTIVITY',
+    desc: 'A minimalist YouTube client restricted to whitelisted educational content.',
+    longDesc: 'Developed a highly focused YouTube alternative designed for deep work and learning. The platform strictly streams videos and channels from a predefined whitelist, entirely stripping away distractions like comments, unrelated recommendations, and UI clutter to ensure users only watch what they are supposed to.',
+    tech: ['React', 'Node.js', 'MongoDB', 'Express', 'YouTube API'],
+    img: 'https://images.unsplash.com/photo-1611162616475-46b635cb6868?q=80&w=1287&auto=format&fit=crop',
+    link: 'https://vercel.com/ameexxs-projects/v0-your-tube-clone',
+    github: 'https://github.com/AMEEXX/YourTube-rw',
   },
   {
     name: 'Future Vault',
@@ -32,8 +43,18 @@ const PROJECTS = [
     longDesc: 'Created a full-stack cloud application with asynchronous processing for 1,000+ scheduled notes. Implemented RESTful web services, Microservices, Spring-JMS, and Kafka for event-driven processing supporting 500+ API requests/day.',
     tech: ['Java', 'Spring Boot', 'Rust', 'Kafka', 'Docker'],
     img: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1287&auto=format&fit=crop',
-    link: '#',
-    github: 'https://github.com/AMEEXX',
+    link: 'https://open-later-rust.vercel.app/',
+    github: 'https://github.com/AMEEXX/Open_Later_Rust',
+  },
+  {
+    name: 'Portfolio Web',
+    tag: '#FRONTEND',
+    desc: 'My personal portfolio and interactive resume platform.',
+    longDesc: 'A highly interactive and visually stunning personal portfolio featuring 3D animations, custom shader effects, dynamic layout transitions, and glassmorphic UI components. Designed to highlight engineering projects and professional achievements.',
+    tech: ['React', 'TailwindCSS', 'Framer Motion', 'Three.js'],
+    img: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop',
+    link: null,
+    github: 'https://github.com/AMEEXX/Amit-Portfolio',
   },
   {
     name: 'AI Agent Marketplace',
@@ -42,28 +63,8 @@ const PROJECTS = [
     longDesc: 'Created a Generative AI agent platform to discover, deploy, configure, and interact with 100+ autonomous AI agents. Integrated LangChain, OpenAI API, and modular MERN components for scalable backend workflows.',
     tech: ['ReactJS', 'Spring Boot', 'LangChain', 'OpenAI API'],
     img: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1287&auto=format&fit=crop',
-    link: '#',
-    github: 'https://github.com/AMEEXX',
-  },
-  {
-    name: 'AI Attendance Tracker',
-    tag: '#AI-VISION',
-    desc: 'An AI-based attendance tracker app utilizing facial recognition.',
-    longDesc: 'A comprehensive computer vision system that automates attendance tracking in large environments. It uses state-of-the-art facial embedding models to recognize individuals in real-time, drastically reducing administrative overhead and ensuring secure access control.',
-    tech: ['React', 'Python', 'OpenCV', 'TensorFlow', 'PostgreSQL'],
-    img: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?q=80&w=1287&auto=format&fit=crop',
-    link: '#',
-    github: 'https://github.com/AMEEXX',
-  },
-  {
-    name: 'Portfolio Web',
-    tag: '#FRONTEND',
-    desc: 'My personal portfolio and interactive resume platform.',
-    longDesc: 'A highly interactive and visually stunning personal portfolio featuring 3D animations, custom shader effects, dynamic layout transitions, and glassmorphic UI components. Designed to highlight engineering projects and professional achievements.',
-    tech: ['React', 'TailwindCSS', 'Framer Motion', 'Three.js'],
-    img: 'https://images.unsplash.com/photo-1481481322814-16a3a411dc82?q=80&w=1287&auto=format&fit=crop',
-    link: '#',
-    github: 'https://github.com/AMEEXX',
+    link: null,
+    github: 'https://github.com/AMEEXX/AI_Agent_Marketplace',
   }
 ];
 
@@ -136,33 +137,58 @@ export default function Portfolio() {
                   </div>
 
                   {/* Action Buttons: Live Project & GitHub */}
-                  <div className="relative mt-4 flex gap-2 pt-4 md:gap-3">
-                    <GradientButton asChild className="flex-1 text-xs md:text-sm py-2 px-3 md:px-4">
-                      <a
-                        href={item.link}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        Live Project
-                        <span className="ml-1.5 inline-block transition-transform duration-300 group-hover:rotate-45">
-                          <svg className="w-4 h-4 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M7 17L17 7" />
-                            <path d="M8 7h9v9" />
-                          </svg>
-                        </span>
-                      </a>
-                    </GradientButton>
+                  {(item.link || item.internal || item.github) && (
+                    <div className="relative mt-4 flex gap-2 pt-4 md:gap-3 border-t border-white/5">
+                      {item.link ? (
+                        <GradientButton asChild className="flex-1 text-xs md:text-sm py-2 px-3 md:px-4">
+                          <a
+                            href={item.link}
+                            onClick={(e) => e.stopPropagation()}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            Live Project
+                            <span className="ml-1.5 inline-block transition-transform duration-300 group-hover:rotate-45">
+                              <svg className="w-4 h-4 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M7 17L17 7" />
+                                <path d="M8 7h9v9" />
+                              </svg>
+                            </span>
+                          </a>
+                        </GradientButton>
+                      ) : item.internal ? (
+                        <div className="flex-1 relative group/internal">
+                          <GradientButton 
+                            className="w-full flex-1 text-xs md:text-sm py-2 px-3 md:px-4 cursor-not-allowed opacity-75"
+                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                          >
+                            Internal Tool
+                            <svg className="w-3.5 h-3.5 inline ml-1.5 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                          </GradientButton>
+                          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-max max-w-[200px] px-3 py-2 bg-[#1a1c1d] border border-white/10 text-white text-[11px] font-semibold rounded-lg opacity-0 translate-y-2 group-hover/internal:opacity-100 group-hover/internal:translate-y-0 transition-all duration-300 pointer-events-none z-50 text-center shadow-xl">
+                            {item.internal}
+                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#1a1c1d]" />
+                          </div>
+                        </div>
+                      ) : null}
 
-                    <GradientButton variant="variant" asChild className="flex-1 text-xs md:text-sm py-2 px-3 md:px-4">
-                      <a
-                        href={item.github}
-                        onClick={(e) => e.stopPropagation()}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        GitHub
-                      </a>
-                    </GradientButton>
-                  </div>
+                      {item.github ? (
+                        <GradientButton variant="variant" asChild className="flex-1 text-xs md:text-sm py-2 px-3 md:px-4">
+                          <a
+                            href={item.github}
+                            onClick={(e) => e.stopPropagation()}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            GitHub
+                          </a>
+                        </GradientButton>
+                      ) : null}
+                    </div>
+                  )}
                 </div>
               }
             >

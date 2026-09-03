@@ -1183,8 +1183,8 @@ img {
 }
 
 .create-band-tile--ghost {
-  background: rgba(241, 240, 238, 0.6);
-  color: rgba(17, 17, 17, 0.35);
+  background: rgba(241, 240, 238, 0.9);
+  color: #111;
 }
 
 .create-band-tile--dark svg {
