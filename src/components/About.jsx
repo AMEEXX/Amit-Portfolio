@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { motion, useInView } from 'motion/react';
 import { FloatingDock } from '@/components/ui/floating-dock';
-import { LiquidGlassButton } from '@/components/ui/liquid-glass-button';
+import { ShinyButton } from '@/components/ui/shiny-button';
 
 const MAIN_TEXT = "I build scalable backend systems and cloud-native applications";
 const MUTED_TEXT = "with Java, Python, Spring Boot, Kubernetes, and a competitive edge forged in global contests.";
@@ -115,10 +115,12 @@ export default function About() {
                 mobileClassName="!bg-transparent"
               />
             </div>
-            <LiquidGlassButton
-              text="Resume"
+            <ShinyButton
               href="https://drive.google.com/file/d/122eIzLXN4gWJ41f37FVfD3_m3afleYT-/view?usp=drive_link"
-            />
+              className="mt-8 px-10 py-5 text-[18px] group"
+            >
+              Resume
+            </ShinyButton>
           </motion.div>
         </div>
       </div>

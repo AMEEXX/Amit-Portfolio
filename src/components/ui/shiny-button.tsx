@@ -6,9 +6,12 @@ export interface ShinyButtonProps {
   children: React.ReactNode
   onClick?: () => void
   className?: string
+  href?: string
 }
 
-export function ShinyButton({ children, onClick, className = "" }: ShinyButtonProps) {
+export function ShinyButton({ children, onClick, className = "", href }: ShinyButtonProps) {
+  const Comp = href ? 'a' : 'button';
+  
   return (
     <>
       <style>{`
@@ -42,8 +45,10 @@ export function ShinyButton({ children, onClick, className = "" }: ShinyButtonPr
           --shiny-cta-bg: #000000;
           --shiny-cta-bg-subtle: #1a1818;
           --shiny-cta-fg: #ffffff;
-          --shiny-cta-highlight: #3b82f6; /* blue-500 */
+          --shiny-cta-highlight: blue;
           --shiny-cta-highlight-subtle: #8484ff;
+          --animation: gradient-angle linear infinite;
+          --duration: 3s;
           --shadow-size: 2px;
           --transition: 800ms cubic-bezier(0.25, 1, 0.5, 1);
           
@@ -52,16 +57,21 @@ export function ShinyButton({ children, onClick, className = "" }: ShinyButtonPr
           overflow: hidden;
           cursor: pointer;
           outline-offset: 4px;
-          padding: 0.5rem 1rem; /* adjusted padding for tags */
           font-family: "Inter", sans-serif;
-          font-size: 0.875rem; /* adjusted font size for tags */
           line-height: 1.2;
           font-weight: 500;
           border: 1px solid transparent;
           border-radius: 360px;
           color: var(--shiny-cta-fg);
           background: linear-gradient(var(--shiny-cta-bg), var(--shiny-cta-bg)) padding-box,
-                      linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)) border-box;
+            conic-gradient(
+              from calc(var(--gradient-angle) - var(--gradient-angle-offset)),
+              transparent,
+              var(--shiny-cta-highlight) var(--gradient-percent),
+              var(--gradient-shine) calc(var(--gradient-percent) * 2),
+              var(--shiny-cta-highlight) calc(var(--gradient-percent) * 3),
+              transparent calc(var(--gradient-percent) * 4)
+            ) border-box;
           box-shadow: inset 0 0 0 1px var(--shiny-cta-bg-subtle);
           transition: var(--transition);
           transition-property: --gradient-angle-offset, --gradient-percent, --gradient-shine;
@@ -108,8 +118,9 @@ export function ShinyButton({ children, onClick, className = "" }: ShinyButtonPr
           z-index: -1;
         }
 
-        /* Inner glow */
+        /* Inner shimmer */
         .shiny-cta::after {
+          --animation: shimmer linear infinite;
           width: 100%;
           aspect-ratio: 1;
           background: linear-gradient(
@@ -119,8 +130,7 @@ export function ShinyButton({ children, onClick, className = "" }: ShinyButtonPr
             transparent
           );
           mask-image: radial-gradient(circle at bottom, transparent 40%, black);
-          opacity: 0;
-          transition: opacity var(--transition);
+          opacity: 0.6;
         }
 
         .shiny-cta span {
@@ -137,12 +147,41 @@ export function ShinyButton({ children, onClick, className = "" }: ShinyButtonPr
           animation: calc(var(--duration) * 1.5) breathe linear infinite;
         }
 
+        /* Animate */
+        .shiny-cta,
+        .shiny-cta::before,
+        .shiny-cta::after {
+          animation: var(--animation) var(--duration),
+            var(--animation) calc(var(--duration) / 0.4) reverse paused;
+          animation-composition: add;
+        }
+
+        .shiny-cta:is(:hover, :focus-visible) {
+          --gradient-percent: 20%;
+          --gradient-angle-offset: 95deg;
+          --gradient-shine: var(--shiny-cta-highlight-subtle);
+        }
+
+        .shiny-cta:is(:hover, :focus-visible),
+        .shiny-cta:is(:hover, :focus-visible)::before,
         .shiny-cta:is(:hover, :focus-visible)::after {
-          opacity: 0.6;
+          animation-play-state: running;
         }
 
         .shiny-cta:is(:hover, :focus-visible) span::before {
           opacity: 1;
+        }
+
+        @keyframes gradient-angle {
+          to {
+            --gradient-angle: 360deg;
+          }
+        }
+
+        @keyframes shimmer {
+          to {
+            rotate: 360deg;
+          }
         }
 
         @keyframes breathe {
@@ -155,9 +194,9 @@ export function ShinyButton({ children, onClick, className = "" }: ShinyButtonPr
         }
       `}</style>
 
-      <div className={`shiny-cta ${className}`} onClick={onClick} role={onClick ? "button" : "presentation"}>
-        <span className="flex items-center gap-2 font-mono tracking-wide">{children}</span>
-      </div>
+      <Comp href={href} className={`shiny-cta ${className}`} onClick={onClick}>
+        <span className="flex items-center justify-center">{children}</span>
+      </Comp>
     </>
   )
 }

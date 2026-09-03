@@ -114,12 +114,12 @@ export default function Education() {
                       
                       <div className="flex items-center gap-3">
                         {/* Year Pill */}
-                        <StaticLiquidTag>
+                        <StaticLiquidTag className="px-4 py-1.5" textClass="text-xs">
                           <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent font-mono text-sm">{item.idx}</span>
                         </StaticLiquidTag>
                         
                         {/* CGPA Pill */}
-                        <StaticLiquidTag>
+                        <StaticLiquidTag className="px-4 py-1.5" textClass="text-xs">
                           <span className="text-cyan-400 text-sm">CGPA <span className="text-white ml-1">{item.cgpa}</span></span>
                         </StaticLiquidTag>
                       </div>
