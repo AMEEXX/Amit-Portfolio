@@ -21,7 +21,7 @@ const PROJECTS = [
     desc: 'Platform migration from VMware ESXi to Red Hat OpenShift.',
     longDesc: 'Engineered PowerStore VSA platform enhancements for virtualized infrastructure, applying Object-Oriented Design, Java, Python, REST APIs, and Microservices. Automated CI/CD workflows across 2 platforms and executed system-level testing, reducing VM latency by 14.6% and improving overall performance by 17.2%.',
     tech: ['Java', 'Python', 'Kubernetes', 'OpenShift', 'Jenkins'],
-    img: 'https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?q=80&w=1287&auto=format&fit=crop',
+    img: '/dell-powerstore-all-flash-storage-hero-2998x1400.avif',
     link: null,
     github: null,
     internal: 'Dell Proprietary Internal Tool',
