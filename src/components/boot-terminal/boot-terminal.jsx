@@ -23,7 +23,7 @@ export function BootTerminal({ onComplete, skippable = true, playOnce = true }) 
     }
   }, [playOnce, onComplete]);
 
-  // ── 7-Phase CRT Exit Sequence (Class-toggle state machine, 0 per-frame state renders) ──
+  // ── Aesthetic Modern Laser Collapse & Iris Burst Exit Sequence ──
   const startExitSequence = useCallback(() => {
     if (exitSequenceStartedRef.current) return;
     exitSequenceStartedRef.current = true;
@@ -41,32 +41,26 @@ export function BootTerminal({ onComplete, skippable = true, playOnce = true }) 
       return;
     }
 
-    // Immediately start collapse transition
+    // Phase 1: Collapse Vertical into a razor-thin laser line (250ms)
     setPhaseClass('phase-collapse-v');
     playSweep();
 
     setTimeout(() => {
-      // Phase D — Collapse H (300ms)
+      // Phase 2: Collapse Horizontal into center point (200ms)
       setPhaseClass('phase-collapse-h');
 
       setTimeout(() => {
-        // Phase E — Beat (100ms)
-        setPhaseClass('phase-beat');
+        // Phase 3: High-Tech Iris Burst Reveal into the site (450ms)
+        setPhaseClass('phase-iris-reveal');
+        playChime();
 
         setTimeout(() => {
-          // Phase F — Iris reveal (500ms)
-          setPhaseClass('phase-iris-reveal');
-          playChime();
-
-          setTimeout(() => {
-            // Phase G — Settle (150ms) & Complete
-            try { sessionStorage.setItem('boot-seen', 'true'); } catch {}
-            if (onComplete) onComplete();
-            setIsUnmounted(true);
-          }, 150);
-        }, 500);
-      }, 100);
-    }, 300);
+          try { sessionStorage.setItem('boot-seen', 'true'); } catch {}
+          if (onComplete) onComplete();
+          setIsUnmounted(true);
+        }, 150);
+      }, 200);
+    }, 250);
   }, [onComplete, playSweep, playChime]);
 
   const { lines, isDone, fastForward } = useTypewriter({
