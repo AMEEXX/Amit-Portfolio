@@ -1,3 +1,4 @@
+// src/components/effects/LiquidRevealCanvas.jsx
 import React, { useEffect, useRef } from 'react';
 
 export default function LiquidRevealCanvas({
@@ -20,10 +21,6 @@ export default function LiquidRevealCanvas({
     const brushRadius = 143;
     const decay = 0.016;
 
-    const ALIGN_SCALE = 1.0;
-    const ALIGN_X = 3;
-    const ALIGN_Y = 0;
-
     let coverCanvas, brushCanvas, brushCtx, coverCtx;
     let cw = 0, ch = 0, radius = 0;
     let points = [];
@@ -36,43 +33,60 @@ export default function LiquidRevealCanvas({
     function drawCover() {
       if (!coverCtx || !afterImg.naturalWidth) return;
       const iw = afterImg.naturalWidth, ih = afterImg.naturalHeight;
-      const targetWidth = cw * 0.8;
-      const scale = Math.max(targetWidth / iw, ch / ih) * ALIGN_SCALE;
-      const sw = iw * scale, sh = ih * scale;
-      const sx = cw - sw + (ALIGN_X / 100) * cw;
-      const sy = (ch - sh) / 2 + (ALIGN_Y / 100) * ch;
-      coverCtx.fillStyle = '#000';
-      coverCtx.fillRect(0, 0, cw, ch);
+      if (cw <= 0 || ch <= 0) return;
+
+      // Strict object-fit: cover math to perfectly align 1:1 with the CSS base image
+      const scale = Math.max(cw / iw, ch / ih);
+      const sw = iw * scale;
+      const sh = ih * scale;
+      const sx = (cw - sw) / 2;
+      const sy = (ch - sh) / 2;
+
+      coverCtx.clearRect(0, 0, cw, ch);
       coverCtx.drawImage(afterImg, sx, sy, sw, sh);
     }
 
     const afterImg = new Image();
     afterImg.crossOrigin = 'anonymous';
-    afterImg.onload = () => {
-      if (coverCtx) drawCover();
+
+    function onImageLoaded() {
       ready = true;
+      sizeCanvas(); // Always call sizeCanvas when image loads to guarantee drawing
+    }
+
+    afterImg.onload = onImageLoaded;
+
+    // CORS Fallback if anonymous crossOrigin fails on Cloudinary CDN
+    afterImg.onerror = () => {
+      if (afterImg.crossOrigin) {
+        afterImg.removeAttribute('crossOrigin');
+        afterImg.src = afterImgUrl;
+      }
     };
+
     afterImg.src = afterImgUrl;
     if (afterImg.complete && afterImg.naturalWidth) {
-      if (coverCtx) drawCover();
-      ready = true;
+      onImageLoaded();
     }
 
     function sizeCanvas() {
-      const rect = container.getBoundingClientRect();
-      cw = Math.round(rect.width * dpr);
-      ch = Math.round(rect.height * dpr);
+      // Use offsetWidth/offsetHeight to ignore CSS transform scaling from the warp transition!
+      const width = container.offsetWidth;
+      const height = container.offsetHeight;
+      if (width <= 0 || height <= 0) return;
+
+      cw = Math.round(width * dpr);
+      ch = Math.round(height * dpr);
       canvas.width = cw;
       canvas.height = ch;
-      canvas.style.width = rect.width + 'px';
-      canvas.style.height = rect.height + 'px';
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
       radius = brushRadius * dpr;
 
       coverCanvas = document.createElement('canvas');
       coverCanvas.width = cw;
       coverCanvas.height = ch;
       coverCtx = coverCanvas.getContext('2d');
-      if (afterImg.complete && afterImg.naturalWidth) drawCover();
 
       const diam = Math.ceil(radius * 2);
       brushCanvas = document.createElement('canvas');
@@ -81,6 +95,10 @@ export default function LiquidRevealCanvas({
       brushCtx = brushCanvas.getContext('2d');
 
       ctx.clearRect(0, 0, cw, ch);
+
+      if (afterImg.complete && afterImg.naturalWidth) {
+        drawCover();
+      }
     }
 
     const ro = new ResizeObserver(() => sizeCanvas());
@@ -100,13 +118,19 @@ export default function LiquidRevealCanvas({
 
     const handlePointerMove = (e) => {
       if (!ready) return;
+      
       const rect = container.getBoundingClientRect();
-      const x = (e.clientX - rect.left) * dpr;
-      const y = (e.clientY - rect.top) * dpr;
+      // Calculate normalized percentage coordinates to handle any active CSS transforms
+      const px = (e.clientX - rect.left) / (rect.width || 1);
+      const py = (e.clientY - rect.top) / (rect.height || 1);
+      
+      // Map to un-transformed canvas resolution
+      const x = px * container.offsetWidth * dpr;
+      const y = py * container.offsetHeight * dpr;
 
       if (cursorDot) {
-        cursorDot.style.left = e.clientX - rect.left + 'px';
-        cursorDot.style.top = e.clientY - rect.top + 'px';
+        cursorDot.style.left = (px * container.offsetWidth) + 'px';
+        cursorDot.style.top = (py * container.offsetHeight) + 'px';
       }
 
       if (x < -radius || y < -radius || x > cw + radius || y > ch + radius) {
@@ -133,6 +157,7 @@ export default function LiquidRevealCanvas({
     window.addEventListener('pointermove', handlePointerMove);
 
     function stamp(x, y) {
+      if (!coverCtx || cw <= 0 || ch <= 0) return;
       const diam = Math.ceil(radius * 2);
       const c = radius;
       brushCtx.clearRect(0, 0, diam, diam);
