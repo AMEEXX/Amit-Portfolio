@@ -12,6 +12,7 @@ export default function RequestModal({ isOpen, onClose }) {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -23,20 +24,45 @@ export default function RequestModal({ isOpen, onClose }) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrorMessage('');
 
-    setTimeout(() => {
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: 'ae353a4f-0f4d-4828-afb9-25fb7de187d4',
+          name: formState.name,
+          email: formState.email,
+          projectType: formState.projectType,
+          message: formState.details,
+        }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setIsSubmitted(true);
+      } else {
+        setErrorMessage(result.message || 'Something went wrong. Please try again.');
+      }
+    } catch (error) {
+      setErrorMessage('Failed to send message. Please check your connection.');
+    } finally {
       setIsSubmitting(false);
-      setIsSubmitted(true);
-    }, 600);
+    }
   };
 
   const handleResetAndClose = () => {
     onClose();
     setTimeout(() => {
       setIsSubmitted(false);
+      setErrorMessage('');
       setFormState({
         name: '',
         email: '',
@@ -127,6 +153,12 @@ export default function RequestModal({ isOpen, onClose }) {
                   onChange={(e) => setFormState({ ...formState, details: e.target.value })}
                 />
               </div>
+
+              {errorMessage && (
+                <div style={{ color: '#ef4444', fontSize: '0.875rem', marginBottom: '1rem', marginTop: '0.5rem' }}>
+                  {errorMessage}
+                </div>
+              )}
 
               <GradientButton type="submit" disabled={isSubmitting} className="w-full mt-4">
                 <span>{isSubmitting ? 'Sending…' : 'Send message'}</span>
