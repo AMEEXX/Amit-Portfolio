@@ -41,42 +41,32 @@ export function BootTerminal({ onComplete, skippable = true, playOnce = true }) 
       return;
     }
 
-    // Phase A — Hold (250ms)
-    setPhaseClass('phase-hold');
+    // Immediately start collapse transition
+    setPhaseClass('phase-collapse-v');
+    playSweep();
 
     setTimeout(() => {
-      // Phase B — Flash (100ms)
-      setPhaseClass('phase-flash');
+      // Phase D — Collapse H (300ms)
+      setPhaseClass('phase-collapse-h');
 
       setTimeout(() => {
-        // Phase C — Collapse V (400ms)
-        setPhaseClass('phase-collapse-v');
-        playSweep();
+        // Phase E — Beat (100ms)
+        setPhaseClass('phase-beat');
 
         setTimeout(() => {
-          // Phase D — Collapse H (300ms)
-          setPhaseClass('phase-collapse-h');
+          // Phase F — Iris reveal (500ms)
+          setPhaseClass('phase-iris-reveal');
+          playChime();
 
           setTimeout(() => {
-            // Phase E — Beat (100ms)
-            setPhaseClass('phase-beat');
-
-            setTimeout(() => {
-              // Phase F — Iris reveal (650ms)
-              setPhaseClass('phase-iris-reveal');
-              playChime();
-
-              setTimeout(() => {
-                // Phase G — Settle (200ms) & Complete
-                try { sessionStorage.setItem('boot-seen', 'true'); } catch {}
-                if (onComplete) onComplete();
-                setIsUnmounted(true);
-              }, 200);
-            }, 650);
-          }, 100);
-        }, 300);
-      }, 400);
-    }, 100);
+            // Phase G — Settle (150ms) & Complete
+            try { sessionStorage.setItem('boot-seen', 'true'); } catch {}
+            if (onComplete) onComplete();
+            setIsUnmounted(true);
+          }, 150);
+        }, 500);
+      }, 100);
+    }, 300);
   }, [onComplete, playSweep, playChime]);
 
   const { lines, isDone, fastForward } = useTypewriter({
@@ -146,14 +136,6 @@ export function BootTerminal({ onComplete, skippable = true, playOnce = true }) 
             )}
           </div>
         ))}
-
-        {/* Blinking block cursor after all commands finished typing during hold phase */}
-        {isDone && phaseClass === 'phase-hold' && (
-          <div className="boot-line boot-line--cmd">
-            <span className="boot-prompt-symbol">$</span>
-            <span className="boot-cursor" />
-          </div>
-        )}
       </div>
 
       {/* Skip Hint */}

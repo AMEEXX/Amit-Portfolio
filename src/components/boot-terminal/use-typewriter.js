@@ -99,8 +99,15 @@ export function useTypewriter({ onKeyStroke, onScriptComplete }) {
           });
           scriptIndexRef.current += 1;
           charIndexRef.current = 0;
-          // Pause 600ms before output or next command
-          timeoutRef.current = setTimeout(typeNextStep, 600);
+
+          // If this was the last line, trigger script completion immediately!
+          if (scriptIndexRef.current >= SCRIPT_LINES.length) {
+            setIsDone(true);
+            if (onScriptComplete) onScriptComplete();
+          } else {
+            // Pause before next line
+            timeoutRef.current = setTimeout(typeNextStep, 500);
+          }
         }
       }
     }
