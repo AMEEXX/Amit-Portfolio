@@ -47,8 +47,8 @@ function DotMatrixCanvas({
     if (startRef.current === null) startRef.current = ts;
     const uTime = (ts - startRef.current) / 1000;
 
-    const W = canvas.width;
-    const H = canvas.height;
+    const W = canvas.clientWidth;
+    const H = canvas.clientHeight;
 
     ctx.clearRect(0, 0, W, H);
 
@@ -114,15 +114,27 @@ function DotMatrixCanvas({
     if (!canvas) return;
 
     function resize() {
-      const rect = canvas.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio, 2);
+      const parent = canvas.parentElement;
+      if (!parent) return;
+      
+      const rect = parent.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      
+      // Force exact physical size to prevent stretching
       canvas.width = rect.width * dpr;
       canvas.height = rect.height * dpr;
+      
+      const ctx = canvas.getContext('2d');
+      // Reset transform before scaling to avoid compounding
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(dpr, dpr);
     }
 
     resize();
     const ro = new ResizeObserver(resize);
-    ro.observe(canvas);
+    if (canvas.parentElement) {
+      ro.observe(canvas.parentElement);
+    }
 
     startRef.current = null;
     rafRef.current = requestAnimationFrame(draw);
@@ -148,7 +160,7 @@ export const CanvasRevealEffect = ({
   opacities = [0.3, 0.3, 0.3, 0.5, 0.5, 0.5, 0.8, 0.8, 0.8, 1],
   colors = [[0, 255, 255]],
   containerClassName,
-  dotSize,
+  dotSize = 2,
   showGradient = true,
 }) => (
   <div className={cn('h-full relative bg-white w-full', containerClassName)}>
@@ -157,7 +169,7 @@ export const CanvasRevealEffect = ({
         colors={colors}
         opacities={opacities}
         animationSpeed={animationSpeed}
-        dotSize={dotSize ?? 3}
+        dotSize={dotSize}
         totalSize={4}
       />
     </div>

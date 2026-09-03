@@ -209,7 +209,8 @@ void main() {
   vec2 uv = gl_PointCoord - 0.5;
   float d = length(uv);
   if (d > 0.5) discard;
-  float strength = pow(1.0 - d * 2.0, 2.2);
+  // A much smaller radius for a crisp, tiny star core
+  float strength = smoothstep(0.2, 0.05, d);
   vec3 color = mix(vec3(0.0), vColor, strength);
   gl_FragColor = vec4(color * uBrightness, strength * uOpacity * vTwinkle * vDepthFade);
 }`;
