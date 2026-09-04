@@ -24,7 +24,7 @@ export default defineConfig({
     include: ['motion/react', 'clsx', 'tailwind-merge', '@react-three/fiber'],
   },
   server: {
-    port: 5500,
+    port: 5173,
     host: true,
   },
 });

@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
+import ChromeButton from '@/components/ui/chrome-button';
+import { ArrowRight } from 'lucide-react';
 
 export default function CreateBand() {
   const [isRevealed, setIsRevealed] = useState(false);
@@ -34,12 +36,9 @@ export default function CreateBand() {
           <div className="create-band-tile create-band-tile--accent">Develop</div>
         </li>
         <li className={`create-band-item ${isRevealed ? 'revealed' : ''}`} style={{ transitionDelay: '240ms' }}>
-          <div className="create-band-tile create-band-tile--dark">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M5 12h14" />
-              <path d="M13 6l6 6-6 6" />
-            </svg>
-          </div>
+          <ChromeButton className="create-band-tile w-full p-0 flex items-center justify-center">
+            <ArrowRight className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+          </ChromeButton>
         </li>
         <li className={`create-band-item ${isRevealed ? 'revealed' : ''}`} style={{ transitionDelay: '360ms' }}>
           <div className="create-band-tile create-band-tile--ghost">Deploy</div>

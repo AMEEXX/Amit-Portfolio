@@ -263,7 +263,7 @@ img {
 }
 
 .navbar-shell.is-condensed .navbar-pill {
-  max-width: 42rem;
+  max-width: 54rem;
   background: transparent;
   border-color: rgba(255, 255, 255, 0.25);
   box-shadow: none;
@@ -1175,8 +1175,9 @@ img {
 }
 
 .create-band-tile--accent {
-  background: linear-gradient(to bottom right, var(--accent-safe), var(--accent-deep));
+  background: linear-gradient(135deg, var(--ink-deep) 0%, var(--accent-deep) 40%, var(--accent-indigo) 80%, var(--accent) 100%);
   color: #fff;
+  border: none;
 }
 
 .create-band-tile--dark {
