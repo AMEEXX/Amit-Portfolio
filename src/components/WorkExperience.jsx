@@ -48,7 +48,8 @@ const Card = ({ title, subtitle, description, logoSrc, logoAlt, logoStyle, tags,
       aria-expanded={active}
       aria-label={`${title} — ${subtitle}`}
       data-active={active ? 'true' : 'false'}
-      className="work-card border border-white/[0.2] group/canvas-card flex items-center justify-center max-w-md w-full mx-auto p-5 sm:p-6 relative min-h-[34rem] sm:min-h-[38rem] lg:min-h-[42rem] cursor-pointer select-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/60"
+      style={{ borderRadius: 0 }}
+      className="work-card rounded-none border border-white/[0.2] group/canvas-card flex items-center justify-center max-w-md w-full mx-auto p-5 sm:p-6 relative min-h-[34rem] sm:min-h-[38rem] lg:min-h-[42rem] cursor-pointer select-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/60"
     >
       {/* Exact corner icons from demo */}
       <Icon className="absolute h-6 w-6 -top-3 -left-3 text-white" />
@@ -175,11 +176,11 @@ export default function WorkExperience() {
               objectFit: 'contain',
             }}
             description={[
-              'Engineered PowerStore VSA platform enhancements applying Java, Python, REST APIs, Microservices, and cloud-native dev.',
-              'Created automation with Python, Perl, Bash for Linux/UNIX troubleshooting and DevOps workflows.',
+              'Engineered PowerStore VSA platform enhancements applying Java, RxJava, REST APIs, Microservices, and cloud-native dev.',
+              'Created automation with Perl and Bash for Linux/UNIX troubleshooting and CI/CD DevOps workflows.',
               'Executed system-level testing and performance optimization, reducing VM latency by 14.6% and improving overall performance by 17.2%.',
             ]}
-            tags={['Virtualization', 'Containerization', 'SDLC', 'DevOps']}
+            tags={['Virtualization', 'Kubernetes', 'Docker', 'RxJava', 'Perl', 'CI/CD', 'Jira']}
           >
             <CanvasRevealEffect
               animationSpeed={3}

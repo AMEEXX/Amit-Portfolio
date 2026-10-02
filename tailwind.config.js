@@ -15,7 +15,10 @@ export default {
         'ink-deep': '#05060f',
       },
       fontFamily: {
-        onest: ['Onest', 'sans-serif'],
+        sans: ['Geist', 'Onest', 'system-ui', 'sans-serif'],
+        display: ['"Instrument Serif"', 'Georgia', 'serif'],
+        mono: ['"Geist Mono"', '"JetBrains Mono"', 'ui-monospace', 'monospace'],
+        onest: ['Geist', 'Onest', 'sans-serif'],
       },
     },
   },

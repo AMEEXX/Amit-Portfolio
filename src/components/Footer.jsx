@@ -46,17 +46,12 @@ export default function Footer({ onOpenModal }) {
           <h2 className="footer-cta-h2" id="footerH2" ref={headingRef}>
             <span className="line-reveal-line">
               <span className={`line-reveal-inner ${headingRevealed ? 'revealed' : ''}`} style={{ transitionDelay: '0ms' }}>
-                Got a role in
+                Got a role in mind?
               </span>
             </span>
             <span className="line-reveal-line">
-              <span className={`line-reveal-inner ${headingRevealed ? 'revealed' : ''}`} style={{ transitionDelay: '100ms' }}>
-                mind? Let's
-              </span>
-            </span>
-            <span className="line-reveal-line">
-              <span className={`line-reveal-inner ${headingRevealed ? 'revealed' : ''}`} style={{ transitionDelay: '200ms' }}>
-                connect.
+              <span className={`line-reveal-inner footer-cta-connect ${headingRevealed ? 'revealed' : ''}`} style={{ transitionDelay: '120ms' }}>
+                Let's connect.
               </span>
             </span>
           </h2>
@@ -77,10 +72,7 @@ export default function Footer({ onOpenModal }) {
         <div className="footer-columns">
           <div>
             <div className="footer-brand-name">
-              <svg viewBox="0 0 48 48" fill="currentColor">
-                <path d="M24 2c2.2 13.8 7.9 19.6 22 22-14.1 2.4-19.8 8.2-22 22-2.2-13.8-7.9-19.6-22-22 14.1-2.4 19.8-8.2 22-22Z" />
-              </svg>
-              Amit Hota
+              About me
             </div>
             <p className="footer-brand-desc">
               A software engineer crafting scalable systems, cloud-native apps, and AI-driven solutions.
@@ -120,11 +112,11 @@ export default function Footer({ onOpenModal }) {
 
         {/* Footer Legal */}
         <div className="footer-legal">
-          <span>© 2025 Amit Kumar Hota. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} Amit Kumar Hota. All rights reserved.</span>
         </div>
       </div>
 
-      <div className="footer-watermark">AMIT HOTA</div>
+      <div className="footer-watermark">AMIT KUMAR HOTA</div>
     </footer>
   );
 }

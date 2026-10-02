@@ -9,6 +9,9 @@
   --accent-deep: #2c165f;
   --accent-indigo: #455792;
   --ink-deep: #05060f;
+  --font-sans: 'Geist', 'Onest', system-ui, sans-serif;
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-mono: 'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
   --font-onest: 'Onest', sans-serif;
 }
 
@@ -27,7 +30,10 @@ html {
 body {
   background: #ffffff;
   color: #111111;
-  font-family: var(--font-onest);
+  font-family: var(--font-sans);
+  font-optical-sizing: auto;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
@@ -259,7 +265,7 @@ html {
   justify-content: space-between;
   gap: 1rem;
   padding: 0.5rem 0.75rem 0.5rem 1.25rem;
-  border-radius: 9999px;
+  border-radius: 0;
   background: transparent;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -332,9 +338,10 @@ html {
 .navbar-item {
   position: relative;
   padding: 0.5rem 0.9rem;
-  border-radius: 9999px;
+  border-radius: 0;
   color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
+  font-family: var(--font-sans);
   font-size: 0.875rem;
   font-weight: 500;
   transition: color 0.25s;
@@ -349,7 +356,7 @@ html {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: 9999px;
+  border-radius: 0;
   background: rgba(255, 255, 255, 0.12);
   opacity: 0;
   transform: scale(0.85);
@@ -381,7 +388,7 @@ html {
   border: none;
   cursor: pointer;
   padding: 0.55rem 1rem;
-  border-radius: 9999px;
+  border-radius: 0;
   font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: -0.005em;
@@ -421,7 +428,7 @@ html {
   justify-content: center;
   width: 2.25rem;
   height: 2.25rem;
-  border-radius: 9999px;
+  border-radius: 0;
   background: transparent;
   border: none;
   color: #fff;
@@ -466,7 +473,7 @@ html {
   flex-direction: column;
   gap: 0.25rem;
   padding: 0.75rem;
-  border-radius: 1.25rem;
+  border-radius: 0;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(14px);
   border: 1px solid rgba(17, 17, 17, 0.1);
@@ -499,7 +506,7 @@ html {
 
 .navbar-mobile-link {
   padding: 0.65rem 0.9rem;
-  border-radius: 0.75rem;
+  border-radius: 0;
   color: rgba(17, 17, 17, 0.85);
   text-decoration: none;
   font-size: 0.9rem;
@@ -787,9 +794,10 @@ html {
 
 .hero-h1 {
   max-width: 18ch;
+  font-family: var(--font-sans);
   font-size: min(2.25rem, 10.5vw);
-  font-weight: 600;
-  line-height: 0.98;
+  font-weight: 500;
+  line-height: 1.02;
   letter-spacing: -0.02em;
   color: #fff;
 }
@@ -835,9 +843,17 @@ html {
 }
 
 .encrypted-text--italic {
+  font-family: var(--font-display);
   font-style: italic;
-  font-family: var(--font-onest);
-  letter-spacing: -0.015em;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.encrypted-text--accent {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
 }
 
 .encrypted-text--accent .encrypted-text__char--encrypted {
@@ -894,6 +910,7 @@ html {
   align-items: center;
   gap: 0.75rem;
   border-radius: 9999px;
+  font-family: 'Onest', sans-serif;
   font-size: 0.875rem;
   font-weight: 500;
 }
@@ -1126,6 +1143,7 @@ html {
 }
 
 .about-h2 {
+  font-family: 'Onest', sans-serif;
   font-size: 1.5rem;
   font-weight: 500;
   line-height: 1.35;
@@ -1256,6 +1274,7 @@ html {
   place-items: center;
   height: 6rem;
   border-radius: 9999px;
+  font-family: 'Onest', sans-serif;
   font-size: 1.875rem;
   font-weight: 500;
   transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -1332,8 +1351,10 @@ html {
 }
 
 .portfolio-h2 {
+  font-family: var(--font-display);
   font-size: 2.25rem;
-  font-weight: 600;
+  font-weight: 400;
+  line-height: 1.02;
   letter-spacing: -0.02em;
   width: fit-content;
   margin-inline: auto;
@@ -1373,7 +1394,7 @@ html {
   position: relative;
   min-height: 22rem;
   overflow: hidden;
-  border-radius: 2rem;
+  border-radius: 0;
   background: #0a0a0a;
   padding: 1.5rem;
   color: #fff;
@@ -1519,8 +1540,10 @@ html {
 .services-h2 {
   margin: 1.25rem 0 3rem;
   max-width: 16ch;
+  font-family: var(--font-display);
   font-size: 2.25rem;
-  font-weight: 600;
+  font-weight: 400;
+  line-height: 1.02;
   letter-spacing: -0.02em;
   color: #fff;
 }
@@ -1675,7 +1698,9 @@ html {
 }
 
 .stats-panel {
-  border-radius: 2rem;
+  position: relative;
+  z-index: 10;
+  border-radius: 0 !important;
   background: #0a0a0a;
   padding: 3rem 1.5rem;
   color: #fff;
@@ -1705,9 +1730,12 @@ html {
 .stats-h2 {
   margin-top: 1rem;
   max-width: 20ch;
+  font-family: var(--font-display);
   font-size: 1.875rem;
-  font-weight: 500;
+  font-weight: 400;
+  line-height: 1.02;
   letter-spacing: -0.01em;
+  color: #fff;
 }
 
 @media (min-width: 768px) {
@@ -1754,12 +1782,15 @@ html {
 }
 
 .stat-number {
+  font-family: var(--font-display);
+  font-weight: 400;
   font-size: min(3rem, 10vw);
   font-size: min(3rem, 38cqi);
-  white-space: nowrap;
-  font-weight: 600;
+  line-height: 1;
   letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: lining-nums proportional-nums;
+  white-space: nowrap;
+  color: #fff;
 }
 
 @media (min-width: 640px) {
@@ -1776,8 +1807,10 @@ html {
 
 .stat-label {
   margin-top: 0.75rem;
+  font-family: var(--font-sans);
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.55);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.42);
 }
 
 /* ── Footer ── */
@@ -1825,9 +1858,12 @@ html {
 
 .footer-cta-h2 {
   max-width: 16ch;
+  font-family: var(--font-display);
+  font-weight: 400;
   font-size: 2.25rem;
-  font-weight: 600;
+  line-height: 1.05;
   letter-spacing: -0.02em;
+  color: #fff;
 }
 
 @media (min-width: 640px) {
@@ -1840,6 +1876,18 @@ html {
   .footer-cta-h2 {
     font-size: 3.75rem;
   }
+}
+
+.footer-cta-connect {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  background: linear-gradient(90deg, #acbde0, #62a2d8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  width: fit-content;
+  padding-right: 0.12em;
 }
 
 .footer-columns {
@@ -1862,7 +1910,9 @@ html {
 }
 
 .footer-col-title {
+  font-family: var(--font-sans);
   font-size: 0.75rem;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.025em;
   color: rgba(255, 255, 255, 0.4);
@@ -1873,8 +1923,10 @@ html {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  font-family: var(--font-sans);
   font-size: 1.125rem;
   font-weight: 600;
+  letter-spacing: -0.01em;
   margin-bottom: 0.75rem;
 }
 
@@ -1885,7 +1937,10 @@ html {
 
 .footer-brand-desc {
   max-width: 20rem;
+  font-family: var(--font-sans);
   font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.55;
   color: rgba(255, 255, 255, 0.55);
 }
 
@@ -1896,7 +1951,9 @@ html {
 }
 
 .footer-col a {
+  font-family: var(--font-sans);
   font-size: 0.875rem;
+  font-weight: 400;
   display: inline-flex;
 }
 
@@ -1920,7 +1977,9 @@ html {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 2rem;
   padding-bottom: env(safe-area-inset-bottom);
+  font-family: var(--font-sans);
   font-size: 0.75rem;
+  font-weight: 400;
   color: rgba(255, 255, 255, 0.45);
   text-align: center;
 }
@@ -1948,16 +2007,30 @@ html {
 .footer-watermark {
   position: absolute;
   inset-inline: 0;
-  bottom: -1.5rem;
+  bottom: -0.24em;
   z-index: 0;
   text-align: center;
   pointer-events: none;
   user-select: none;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
   line-height: 1;
   white-space: nowrap;
-  font-size: min(13rem, 16.5vw);
-  color: rgba(255, 255, 255, 0.05);
+  font-size: min(13.5rem, 14vw);
+  transform: scaleY(1.12);
+  transform-origin: bottom center;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.16));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+#footerCtaBtn .pill-inner {
+  font-family: 'Onest', sans-serif !important;
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
 /* ── RequestModal ── */
@@ -2005,7 +2078,7 @@ html {
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
-  border-radius: 2rem;
+  border-radius: 0;
   background: #fff;
   padding: 1.5rem;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 40px rgba(16, 185, 129, 0.08);
@@ -2434,6 +2507,8 @@ html {
 
 @layer components {
   .gradient-button {
+    border-radius: 0 !important;
+    font-family: 'Onest', sans-serif !important;
     @apply relative appearance-none cursor-pointer;
     background: radial-gradient(
       var(--spread-x) var(--spread-y) at var(--pos-x) var(--pos-y),
@@ -2582,7 +2657,7 @@ html {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: 9999px;
+  border-radius: 0;
   padding: 1px; /* 1px border */
   background: conic-gradient(
     from var(--liquid-angle),
@@ -2606,7 +2681,7 @@ html {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: 9999px;
+  border-radius: 0;
   padding: 1.5px;
   background: conic-gradient(
     from var(--liquid-angle),
@@ -2678,14 +2753,20 @@ html {
 }
 
 .kbd-title {
-  font-family: inherit;
-  font-size: clamp(2rem, 5vw, 4rem);
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 400;
+  line-height: 1.02;
   letter-spacing: -0.02em;
   color: #fff;
   margin: 0 auto;
-  line-height: 1.05;
   max-width: 56rem;
+}
+
+@media (min-width: 640px) {
+  .kbd-title {
+    font-size: 3rem;
+  }
 }
 
 .kbd-stage {
@@ -2822,4 +2903,61 @@ body {
     min-width: 0;
     padding-inline: 1.5rem;
   }
+}
+
+/* ── Eyebrow Styling ── */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: none;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.eyebrow-dot {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.eyebrow--dark,
+.eyebrow--light,
+.about .eyebrow--dark {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+/* ── Experience card: Onest font & original typography ── */
+.work-card {
+  border-radius: 0 !important;
+}
+
+.work-card,
+.work-card h2,
+.work-card p,
+.work-card ul,
+.work-card li,
+.work-card span,
+.work-card .work-reveal {
+  font-family: 'Onest', sans-serif !important;
+}
+
+#education .service-row,
+#education .service-row h3,
+#education .service-row div {
+  font-family: 'Onest', sans-serif !important;
+}
+
+/* ── Portfolio card back details: Onest font & original sizes ── */
+.portfolio [data-lenis-prevent],
+.portfolio [data-lenis-prevent] h3,
+.portfolio [data-lenis-prevent] h4,
+.portfolio [data-lenis-prevent] p,
+.portfolio [data-lenis-prevent] span,
+.portfolio [data-lenis-prevent] button,
+.portfolio [data-lenis-prevent] a {
+  font-family: 'Onest', sans-serif !important;
 }

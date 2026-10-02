@@ -23,11 +23,15 @@ export default function Hero({ isLoaderFinished, onOpenModal }) {
   const cursorDotRef = useRef(null);
   const revealWidthRef = useRef(pickRevealWidth());
 
-  useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.style.setProperty('--hero-status-h', '0px');
+  const handleScrollToWork = (e) => {
+    e.preventDefault();
+    if (typeof window !== 'undefined' && window.scrollToId) {
+      window.scrollToId('works');
+    } else {
+      const el = document.getElementById('works');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
     }
-  }, []);
+  };
 
   return (
     <section className="hero" id="home" ref={containerRef}>
@@ -108,6 +112,23 @@ export default function Hero({ isLoaderFinished, onOpenModal }) {
           </div>
         </div>
         <div className="hero-right" />
+      </div>
+
+      {/* Hero Status Bar */}
+      <div className={`hero-status ${isLoaderFinished ? 'revealed' : ''}`} id="heroStatus">
+        <div className="shell hero-status-inner">
+          <span className="inline-flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-yellow-400 inline-block animate-pulse" />
+            Open to work
+          </span>
+          <a
+            href="#works"
+            onClick={handleScrollToWork}
+            className="hero-status-right hover:text-white transition-colors cursor-pointer"
+          >
+            Scroll to explore <span>↓</span>
+          </a>
+        </div>
       </div>
     </section>
   );

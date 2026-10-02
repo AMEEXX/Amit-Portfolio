@@ -32,3 +32,13 @@ dist-isolation
 core
 core.*
 a.js
+
+# Windows NTFS Alternate Data Streams
+*:Zone.Identifier
+*.Zone.Identifier
+*.Identifier
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+diagnose.mjs
+amit.dev

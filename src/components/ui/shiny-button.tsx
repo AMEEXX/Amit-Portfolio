@@ -57,11 +57,11 @@ export function ShinyButton({ children, onClick, className = "", href }: ShinyBu
           overflow: hidden;
           cursor: pointer;
           outline-offset: 4px;
-          font-family: "Inter", sans-serif;
+          font-family: 'Onest', sans-serif;
           line-height: 1.2;
           font-weight: 500;
           border: 1px solid transparent;
-          border-radius: 360px;
+          border-radius: 0;
           color: var(--shiny-cta-fg);
           background: linear-gradient(var(--shiny-cta-bg), var(--shiny-cta-bg)) padding-box,
             conic-gradient(

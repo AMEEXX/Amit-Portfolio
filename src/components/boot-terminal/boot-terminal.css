@@ -6,7 +6,7 @@
   z-index: 99999;
   background-color: #08080a; /* Classy pure shade of black - zero blue tint */
   color: #ffffff;
-  font-family: 'JetBrains Mono', 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: 'Geist Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   display: flex;
   flex-direction: column;
   justify-content: center; /* Dead-center vertically */

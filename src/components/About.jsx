@@ -32,7 +32,7 @@ export default function About() {
         >
           <div className="eyebrow eyebrow--dark" style={{ position: 'relative' }}>
             <span className="eyebrow-dot" />
-            About Me
+            About me
           </div>
         </motion.div>
 
@@ -116,7 +116,7 @@ export default function About() {
             </div>
             <ShinyButton
               href="https://drive.google.com/file/d/1V4nJo9dbEVhRpYUrMPVHSxI_Z3ycBQAw/view?usp=sharing"
-              className="mt-8 px-10 py-5 text-[18px] group"
+              className="mt-8 px-10 py-5 text-[18px] group rounded-none"
             >
               Resume
             </ShinyButton>

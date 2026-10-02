@@ -9,18 +9,28 @@ const PROJECTS = [
     name: 'Attract',
     tag: '#AI-VISION',
     desc: 'A mobile facial recognition app for seamless classroom attendance.',
-    longDesc: 'An innovative AI-powered mobile app designed for teachers. The app is securely pinned on the teacher’s phone and circulated around the classroom. Students snap quick photos of themselves, and the system automatically logs their attendance using advanced facial recognition models.',
-    tech: ['React', 'Python', 'OpenCV', 'TensorFlow', 'PostgreSQL'],
+    longDesc: 'An innovative AI-powered mobile app designed for teachers. The app is securely pinned on the teacher’s phone and circulated around the classroom. Students snap quick photos of themselves, and the system automatically logs their attendance using YOLO face detection and ArcFace Net recognition models.',
+    tech: ['Kotlin', 'YOLO', 'ArcFace Net', 'TFLite', 'OpenCV'],
     img: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?q=80&w=1287&auto=format&fit=crop',
     link: null,
     github: 'https://github.com/AMEEXX/Attract-AI-Based-Attendance-Tracker',
   },
   {
-    name: 'PowerStore VSA on OpenShift',
+    name: 'Citadel',
+    tag: '#SYSTEMS-SECURITY',
+    desc: 'An air-gapped, offline secure assessment platform and custom lockdown client.',
+    longDesc: 'Engineered a fully air-gapped, offline secure assessment platform for high-stakes coding exams supporting 500+ concurrent candidates. Built a custom native lockdown client with low-level Win32 security APIs, network isolation via Windows Filtering Platform (WFP), sandbox execution, and a zero-cloud appliance server with local failover.',
+    tech: ['Rust', 'Tokio', 'Axum', 'Win32 API', 'WFP', 'Cryptography'],
+    img: '/image.png',
+    link: null,
+    github: 'https://github.com/AMEEXX/citadel',
+  },
+  {
+    name: 'PowerStore VSA Migration',
     tag: '#DELL-INTERN',
-    desc: 'Platform migration from VMware ESXi to Red Hat OpenShift.',
-    longDesc: 'Engineered PowerStore VSA platform enhancements for virtualized infrastructure, applying Object-Oriented Design, Java, Python, REST APIs, and Microservices. Automated CI/CD workflows across 2 platforms and executed system-level testing, reducing VM latency by 14.6% and improving overall performance by 17.2%.',
-    tech: ['Java', 'Python', 'Kubernetes', 'OpenShift', 'Jenkins'],
+    desc: 'Platform virtualization and infrastructure migration for PowerStore VSA.',
+    longDesc: 'Engineered PowerStore VSA platform enhancements for virtualized infrastructure, applying Object-Oriented Design, Java, RxJava, REST APIs, and Microservices. Automated CI/CD workflows across platforms and executed system-level testing, reducing VM latency by 14.6% and improving overall performance by 17.2%.',
+    tech: ['Java', 'RxJava', 'Perl', 'Kubernetes', 'Docker', 'Virtualization', 'CI/CD', 'Jira'],
     img: '/dell-powerstore-all-flash-storage-hero-2998x1400.avif',
     link: null,
     github: null,
@@ -53,18 +63,8 @@ const PROJECTS = [
     longDesc: 'A highly interactive and visually stunning personal portfolio featuring 3D animations, custom shader effects, dynamic layout transitions, and glassmorphic UI components. Designed to highlight engineering projects and professional achievements.',
     tech: ['React', 'TailwindCSS', 'Framer Motion', 'Three.js'],
     img: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop',
-    link: null,
+    link: 'https://port-amex-portfolio.onrender.com/',
     github: 'https://github.com/AMEEXX/Amit-Portfolio',
-  },
-  {
-    name: 'AI Agent Marketplace',
-    tag: '#GEN-AI',
-    desc: 'Discover, deploy, and interact with autonomous AI agents.',
-    longDesc: 'Created a Generative AI agent platform to discover, deploy, configure, and interact with 100+ autonomous AI agents. Integrated LangChain, OpenAI API, and modular MERN components for scalable backend workflows.',
-    tech: ['ReactJS', 'Spring Boot', 'LangChain', 'OpenAI API'],
-    img: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1287&auto=format&fit=crop',
-    link: null,
-    github: 'https://github.com/AMEEXX/AI_Agent_Marketplace',
   }
 ];
 
@@ -100,7 +100,7 @@ export default function Portfolio() {
               key={i}
               className="h-full w-full group/card"
               backContent={
-                <div data-lenis-prevent className="relative flex h-full w-full flex-col justify-between overflow-x-hidden overflow-y-auto overscroll-contain rounded-[24px] border border-white/10 bg-gradient-to-b from-[#0d0d10] via-black to-black p-4 sm:p-6 text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_20px_45px_-15px_rgba(0,0,0,0.7)]">
+                <div data-lenis-prevent className="relative flex h-full w-full flex-col justify-between overflow-x-hidden overflow-y-auto overscroll-contain rounded-none border border-white/10 bg-gradient-to-b from-[#0d0d10] via-black to-black p-4 sm:p-6 text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_20px_45px_-15px_rgba(0,0,0,0.7)]">
                   {/* Aesthetic Grid Pattern */}
                   <div 
                     className="pointer-events-none absolute inset-0 z-0 opacity-60 mix-blend-screen"
@@ -118,7 +118,7 @@ export default function Portfolio() {
                   <div className="relative z-10">
                     {/* Title & Description */}
                     <div className="mb-1.5 flex items-center gap-2">
-                      <span className="h-4 w-1 rounded-full bg-blue-400" />
+                      <span className="h-4 w-1 rounded-none bg-blue-400" />
                       <h3 className="text-lg md:text-xl font-semibold tracking-tight text-white">{item.name}</h3>
                     </div>
                     <p className="mb-4 text-[13px] leading-relaxed text-white/60 line-clamp-4">{item.longDesc}</p>
@@ -128,7 +128,7 @@ export default function Portfolio() {
                       <h4 className="text-xs font-bold text-blue-400/80">Tech Stack:</h4>
                       <div className="flex flex-wrap gap-2">
                         {item.tech.map(t => (
-                          <StaticLiquidTag key={t} className="px-3 py-1" textClass="text-[11px] uppercase tracking-wider">
+                          <StaticLiquidTag key={t} rounded="rounded-none" className="px-3 py-1 rounded-none" textClass="text-[11px] uppercase tracking-wider">
                             {t}
                           </StaticLiquidTag>
                         ))}
@@ -162,7 +162,7 @@ export default function Portfolio() {
                             className="w-full flex-1 text-xs md:text-sm py-2 px-3 md:px-4 cursor-not-allowed opacity-75"
                             onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
                           >
-                            Internal Tool
+                            Dell Internal Tool
                             <svg className="w-3.5 h-3.5 inline ml-1.5 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                               <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
@@ -193,7 +193,7 @@ export default function Portfolio() {
               }
             >
               <div
-                className="flex w-full flex-col items-stretch rounded-[24px] border-0 bg-[#1F2121] p-4 saturate-0 transition-all group-hover/card:saturate-100 h-full"
+                className="flex w-full flex-col items-stretch rounded-none border-0 bg-[#1F2121] p-4 saturate-0 transition-all duration-500 group-hover/card:saturate-100 h-full"
                 style={{
                   transformStyle: "preserve-3d",
                   transform: "none",
@@ -201,10 +201,10 @@ export default function Portfolio() {
                 }}
               >
                 <div className="mx-2 flex-1 flex flex-col justify-center">
-                  <div className="relative mt-2 aspect-square w-full">
+                  <div className="relative mt-2 aspect-square w-full overflow-hidden">
                     <img
                       loading="lazy"
-                      className="absolute inset-0 h-full w-full rounded-[18px] bg-[#000000] object-cover contrast-75"
+                      className="absolute inset-0 h-full w-full rounded-none bg-[#000000] object-cover contrast-75 group-hover/card:contrast-100 group-hover/card:brightness-110 group-hover/card:scale-105 transition-all duration-500"
                       alt={item.name}
                       src={item.img}
                       style={{

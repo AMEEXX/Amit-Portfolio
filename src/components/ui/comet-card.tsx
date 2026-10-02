@@ -125,7 +125,7 @@ export const CometCard = ({
                 transition: { duration: 0.2 },
               }
         }
-        className="relative rounded-2xl [transform-style:preserve-3d]"
+        className="relative rounded-none [transform-style:preserve-3d]"
       >
         <motion.div
           animate={{ rotateY: isFlipped ? 180 : 0 }}
@@ -140,7 +140,7 @@ export const CometCard = ({
             {children}
             {/* Glare effect restricted to front face to avoid 3D clipping during flip */}
             <motion.div
-              className="pointer-events-none absolute inset-0 z-50 h-full w-full rounded-[16px] mix-blend-overlay"
+              className="pointer-events-none absolute inset-0 z-50 h-full w-full rounded-none mix-blend-overlay"
               style={{
                 background: glareBackground,
                 opacity: 0.2,

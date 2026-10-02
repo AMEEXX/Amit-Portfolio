@@ -91,7 +91,7 @@ export default function Stats() {
   return (
     <section className="stats" ref={sectionRef}>
       <div className="shell stats-outer">
-        <div id="statsPanel" className={`stats-panel ${isPanelRevealed ? 'revealed' : ''}`}>
+        <div id="statsPanel" className={`stats-panel rounded-none ${isPanelRevealed ? 'revealed' : ''}`} style={{ borderRadius: 0 }}>
           <div className="eyebrow eyebrow--light">
             <span className="eyebrow-dot" />
             Career highlights
