@@ -28,7 +28,6 @@ body {
   background: #ffffff;
   color: #111111;
   font-family: var(--font-onest);
-  overflow-x: hidden;
 }
 
 a {
@@ -64,28 +63,36 @@ img {
   }
 }
 
-/* ── Adaptive Viewport Typography Grid ── */
-@media (max-width: 1920px) {
+/* ── Adaptive Viewport Typography Grid ──
+   Fluid but clamped root size. Every band is bounded so there are no huge
+   jumps at breakpoints (the old scale went 28px -> 10px between 640 and 641px
+   and 16px -> 11px between 1024 and 1025px, which overflowed tablets). */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+@media (min-width: 1921px) {
   html {
-    font-size: 0.833333vw;
+    font-size: clamp(16px, 0.833333vw, 21px);
   }
 }
 
 @media (max-width: 1440px) {
   html {
-    font-size: 1.111111vw;
+    font-size: clamp(14px, 1.111111vw, 16px);
   }
 }
 
 @media (max-width: 1024px) {
   html {
-    font-size: 1.5625vw;
+    font-size: 15px;
   }
 }
 
 @media (max-width: 640px) {
   html {
-    font-size: 4.444444vw;
+    font-size: clamp(14px, 4.444444vw, 17.5px);
   }
 }
 
@@ -231,12 +238,16 @@ img {
   display: flex;
   justify-content: center;
   pointer-events: none;
-  padding-inline: 1rem;
+  padding-inline: max(1rem, env(safe-area-inset-left), env(safe-area-inset-right));
   transition: top 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+.navbar-shell {
+  top: max(1.25rem, env(safe-area-inset-top));
+}
+
 .navbar-shell.is-condensed {
-  top: 1rem;
+  top: max(1rem, env(safe-area-inset-top));
 }
 
 .navbar-pill {
@@ -263,7 +274,7 @@ img {
 }
 
 .navbar-shell.is-condensed .navbar-pill {
-  max-width: 54rem;
+  max-width: 56rem;
   background: transparent;
   border-color: rgba(255, 255, 255, 0.25);
   box-shadow: none;
@@ -466,6 +477,12 @@ img {
   transform: translateY(-6px);
   pointer-events: none;
   transition: opacity 0.25s, transform 0.25s;
+  /* Never taller than the screen (phones in landscape) — scroll inside instead */
+  max-height: calc(100vh - 6rem);
+  max-height: calc(100svh - 6rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 @media (min-width: 1024px) {
@@ -518,7 +535,13 @@ img {
   isolation: isolate;
   overflow: hidden;
   border-radius: 0;
-  background: #c9c9c9;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  /* svh = visible height with mobile browser chrome shown -> nothing hidden
+     behind the URL bar. vh is the fallback for older browsers. */
+  min-height: 100vh;
+  min-height: 100svh;
 }
 
 .hero-reveal-bg {
@@ -537,6 +560,7 @@ img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: 50% 50%; /* must match the cover math in LiquidRevealCanvas */
   transform-origin: center;
 }
 
@@ -551,7 +575,7 @@ img {
 .hero-brand-floating {
   position: absolute;
   left: 0;
-  bottom: 1.25rem;
+  bottom: calc(var(--hero-status-h, 3.5rem) + 0.75rem);
   z-index: 30;
   display: inline-flex;
   align-items: center;
@@ -570,7 +594,6 @@ img {
 
 @media (min-width: 640px) {
   .hero-brand-floating {
-    bottom: 1.5rem;
     padding: 0.5rem 1.25rem;
   }
 }
@@ -622,6 +645,13 @@ img {
   transform: translate(-50%, -50%) scale(1);
 }
 
+/* Touch screens have no cursor — never leave a stuck dot on the face */
+@media (hover: none), (pointer: coarse) {
+  .hero-cursor {
+    display: none;
+  }
+}
+
 .hero-watermark {
   pointer-events: none;
   position: absolute;
@@ -632,7 +662,9 @@ img {
   user-select: none;
   font-weight: 700;
   line-height: 1;
-  font-size: 11rem;
+  white-space: nowrap;
+  /* Sized so "AMIT HOTA" always fits on one line next to its 20% offset */
+  font-size: min(11rem, 9.4vw);
   color: rgba(255, 255, 255, 0.4);
   opacity: 0;
   transform: translateX(20%) translateY(20px);
@@ -644,13 +676,71 @@ img {
   transform: translateX(20%) translateY(0);
 }
 
+/* Phones / portrait tablets: centred, full-width watermark across the chest */
+@media (max-width: 1023px) {
+  .hero-watermark {
+    font-size: 16.5vw;
+    /* Own band between the CTAs and the floating brand — never behind the headline */
+    bottom: calc(var(--hero-status-h, 3rem) + 3.4rem);
+    transform: translateY(20px);
+  }
+  .hero-watermark.revealed {
+    transform: translateY(0);
+  }
+}
+
 .hero-content {
   position: relative;
   z-index: 20;
+  flex: 1 0 auto;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 2rem;
   padding: 7rem 1.25rem 5rem;
+}
+
+/* Portrait phones & tablets: the face sits in the top half of the photo, so the
+   headline moves to the bottom (over the dark suit) and the face stays clear. */
+@media (max-width: 1023px) {
+  .hero-content {
+    justify-content: flex-end;
+    gap: 1.5rem;
+    padding-top: 6.5rem;
+    padding-bottom: calc(var(--hero-status-h, 3rem) + 4.25rem + 17vw);
+  }
+  .hero-vignette {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.35) 30%, rgba(0, 0, 0, 0) 55%);
+  }
+}
+
+/* Phones in landscape: short screen — tighten vertical rhythm so it all fits */
+@media (max-width: 1023px) and (max-height: 520px) and (orientation: landscape) {
+  .hero .hero-content {
+    justify-content: center;
+    padding-top: 4.5rem;
+    padding-bottom: calc(var(--hero-status-h, 3rem) + 0.75rem);
+    gap: 0.9rem;
+  }
+  .hero .hero-watermark {
+    top: auto;
+    bottom: calc(var(--hero-status-h, 3rem) + 0.25rem);
+    font-size: 8.5vw;
+  }
+  .hero-vignette {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 60%);
+  }
+  .hero .hero-h1 {
+    /* Height-driven on short landscape screens so 3 lines + CTAs always fit */
+    font-size: clamp(1.6rem, 9.5svh, 3rem);
+  }
+  .hero .hero-ctas > * {
+    padding-block: 0.7rem;
+    font-size: 0.95rem;
+  }
+  .hero-brand-floating {
+    display: none;
+  }
 }
 
 @media (min-width: 640px) {
@@ -662,7 +752,7 @@ img {
 @media (min-width: 1024px) {
   .hero-content {
     display: grid;
-    min-height: 100lvh;
+    align-content: center;
     grid-template-columns: repeat(12, 1fr);
     gap: 2.5rem;
     padding: 9rem 2rem 7rem;
@@ -697,7 +787,7 @@ img {
 
 .hero-h1 {
   max-width: 18ch;
-  font-size: 2.25rem;
+  font-size: min(2.25rem, 10.5vw);
   font-weight: 600;
   line-height: 0.98;
   letter-spacing: -0.02em;
@@ -867,6 +957,9 @@ img {
 }
 
 .hero-status {
+  position: relative;
+  z-index: 20;
+  width: 100%;
   opacity: 0;
   transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) 1.2s;
 }
@@ -887,6 +980,16 @@ img {
   text-transform: uppercase;
   letter-spacing: 0.025em;
   color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+  padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+}
+
+@media (max-width: 639px) {
+  .hero-status-inner {
+    font-size: 0.625rem;
+    padding-block: 0.9rem;
+    padding-bottom: max(0.9rem, env(safe-area-inset-bottom));
+  }
 }
 
 @media (min-width: 640px) {
@@ -951,7 +1054,7 @@ img {
 
 .about-globe {
   position: relative;
-  min-height: 14rem;
+  min-height: 0;
 }
 
 @media (min-width: 1024px) {
@@ -1128,7 +1231,7 @@ img {
   padding: 2.5rem 1.25rem;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
   .create-band-list {
     flex-direction: row;
     gap: 1rem;
@@ -1158,10 +1261,10 @@ img {
   transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
   .create-band-tile {
     height: 10rem;
-    font-size: 2.25rem;
+    font-size: min(2.25rem, 3.4vw);
   }
 }
 
@@ -1621,6 +1724,16 @@ img {
   row-gap: 3rem;
 }
 
+@media (max-width: 639px) {
+  .stats-grid {
+    column-gap: 1rem;
+    row-gap: 2.25rem;
+  }
+  .stats-panel {
+    padding-inline: 1.25rem;
+  }
+}
+
 @media (min-width: 1024px) {
   .stats-grid {
     grid-template-columns: repeat(4, 1fr);
@@ -1628,6 +1741,8 @@ img {
 }
 
 .stat-item {
+  min-width: 0;
+  container-type: inline-size;
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1639,7 +1754,9 @@ img {
 }
 
 .stat-number {
-  font-size: 3rem;
+  font-size: min(3rem, 10vw);
+  font-size: min(3rem, 38cqi);
+  white-space: nowrap;
   font-weight: 600;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
@@ -1647,13 +1764,13 @@ img {
 
 @media (min-width: 640px) {
   .stat-number {
-    font-size: 3.75rem;
+    font-size: min(3.75rem, 38cqi);
   }
 }
 
 @media (min-width: 768px) {
   .stat-number {
-    font-size: 4.5rem;
+    font-size: min(4.5rem, 38cqi);
   }
 }
 
@@ -1802,8 +1919,10 @@ img {
   gap: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 2rem;
+  padding-bottom: env(safe-area-inset-bottom);
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.45);
+  text-align: center;
 }
 
 @media (min-width: 640px) {
@@ -1836,7 +1955,8 @@ img {
   user-select: none;
   font-weight: 700;
   line-height: 1;
-  font-size: 13rem;
+  white-space: nowrap;
+  font-size: min(13rem, 16.5vw);
   color: rgba(255, 255, 255, 0.05);
 }
 
@@ -1849,7 +1969,12 @@ img {
   align-items: flex-end;
   justify-content: center;
   padding: 1rem;
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   background: rgba(17, 17, 17, 0.3);
+  -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   opacity: 0;
   visibility: hidden;
@@ -1874,7 +1999,12 @@ img {
   position: relative;
   width: 100%;
   max-width: 32rem;
-  overflow: hidden;
+  margin-block: auto;
+  max-height: calc(100vh - 2rem);
+  max-height: calc(100dvh - 2rem);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   border-radius: 2rem;
   background: #fff;
   padding: 1.5rem;
@@ -2006,6 +2136,15 @@ img {
   min-height: 5rem;
 }
 
+/* iOS Safari zooms the page when a focused field is < 16px */
+@media (hover: none), (pointer: coarse) {
+  .form-input,
+  .form-textarea,
+  .form-select {
+    font-size: max(16px, 0.875rem);
+  }
+}
+
 .form-submit {
   margin-top: 0.5rem;
   width: 100%;
@@ -2057,13 +2196,22 @@ img {
   isolation: isolate;
 }
 
-.starfield-zone #starfield-scene {
+.starfield-zone > .starfield-track {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
   pointer-events: none;
   z-index: 0;
+}
+
+.starfield-zone #starfield-scene {
+  position: sticky;
+  top: 0;
+  display: block;
+  width: 100%;
+  /* lvh: stays constant while the mobile URL bar shows/hides -> no resize jank */
+  height: 100vh;
+  height: 100lvh;
+  pointer-events: none;
 }
 
 .starfield-zone > section,
@@ -2481,5 +2629,197 @@ img {
   .liquid-glass-btn::before,
   .liquid-glass-btn::after {
     animation-play-state: paused;
+  }
+}
+
+/* ── 3D Skills Keyboard (Spline) ──
+   Tall scroll track + sticky viewport stage. svh = height with mobile browser
+   UI visible, so the keyboard is never hidden behind the URL bar / toolbar. */
+.kbd-section {
+  position: relative;
+  height: 300vh;
+  height: 300svh;
+}
+
+@media (max-width: 767px) {
+  .kbd-section {
+    height: 260vh;
+    height: 260svh;
+  }
+}
+
+.kbd-section--static {
+  height: auto;
+}
+
+.kbd-label {
+  position: absolute;
+  top: 4rem;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  text-align: center;
+  pointer-events: none;
+  padding-inline: 1rem;
+}
+
+.kbd-section--static .kbd-label {
+  position: relative;
+  top: 0;
+  padding-top: 4rem;
+}
+
+.kbd-eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  margin: 0 0 0.5rem;
+}
+
+.kbd-title {
+  font-family: inherit;
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #fff;
+  margin: 0 auto;
+  line-height: 1.05;
+  max-width: 56rem;
+}
+
+.kbd-stage {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  /* Vertical swipes on the 3D canvas scroll the page */
+  touch-action: pan-y;
+}
+
+.kbd-section--static .kbd-stage {
+  position: relative;
+  height: min(80svh, 46rem);
+  min-height: 24rem;
+}
+
+.kbd-scene {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.kbd-scene canvas {
+  display: block;
+  touch-action: pan-y !important;
+  outline: none;
+}
+
+/* Fallback skills grid (no WebGL) */
+.kbd-fallback {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  padding: 7rem 1.25rem 2rem;
+}
+
+.kbd-fallback-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 52rem;
+}
+
+.kbd-fallback-key {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0.5rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+/* ── Global responsive safety net ── */
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+}
+
+/* Lenis recommended CSS (prevents double smoothing & iOS jank) */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Clip horizontal overflow without breaking position: sticky (clip, not hidden) */
+html,
+body {
+  overflow-x: clip;
+}
+
+@supports not (overflow: clip) {
+  body {
+    overflow-x: hidden;
+  }
+}
+
+/* ── Work experience cards: hover (mouse) or tap (touch) reveals details ── */
+.work-card .work-reveal {
+  opacity: 0;
+}
+
+.work-card[data-active='true'] .work-reveal {
+  opacity: 1;
+}
+
+.work-card[data-active='true'] .work-card-logo,
+.work-card[data-active='true'] .work-card-hint {
+  opacity: 0;
+  transform: translateY(-1rem);
+}
+
+.work-card[data-active='true'] h2.work-reveal {
+  transform: translateY(-0.5rem);
+}
+
+@media (min-width: 768px) {
+  .work-card {
+    flex: 1 1 0;
+  }
+}
+
+/* Tiny phones (Galaxy Fold, iPhone SE 1st gen) */
+@media (max-width: 359px) {
+  .shell {
+    padding-inline: 1rem;
+  }
+  .hero-content {
+    padding-inline: 1rem;
+  }
+  .hero-ctas > * {
+    min-width: 0;
+    padding-inline: 1.5rem;
   }
 }

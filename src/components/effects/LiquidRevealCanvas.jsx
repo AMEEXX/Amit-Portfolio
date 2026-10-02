@@ -18,7 +18,8 @@ export default function LiquidRevealCanvas({
 
     const ctx = canvas.getContext('2d');
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const brushRadius = 143;
+    // Brush scales with the hero so phones get a proportional reveal (143px on desktop)
+    const getBrushRadius = (w, h) => Math.max(70, Math.min(143, Math.min(w, h) * 0.22));
     const decay = 0.016;
 
     let coverCanvas, brushCanvas, brushCtx, coverCtx;
@@ -81,7 +82,7 @@ export default function LiquidRevealCanvas({
       canvas.height = ch;
       canvas.style.width = width + 'px';
       canvas.style.height = height + 'px';
-      radius = brushRadius * dpr;
+      radius = getBrushRadius(width, height) * dpr;
 
       coverCanvas = document.createElement('canvas');
       coverCanvas.width = cw;
@@ -154,7 +155,16 @@ export default function LiquidRevealCanvas({
       lastPt = { x, y };
     };
 
-    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+
+    // Touch: a tap / start of a drag paints immediately (pointermove alone is
+    // cancelled by the browser once the finger starts scrolling).
+    const handlePointerDown = (e) => {
+      if (e.pointerType === 'mouse') return;
+      lastPt = null;
+      handlePointerMove(e);
+    };
+    container.addEventListener('pointerdown', handlePointerDown, { passive: true });
 
     function stamp(x, y) {
       if (!coverCtx || cw <= 0 || ch <= 0) return;
@@ -211,6 +221,7 @@ export default function LiquidRevealCanvas({
       container.removeEventListener('pointerenter', handlePointerEnter);
       container.removeEventListener('pointerleave', handlePointerLeave);
       window.removeEventListener('pointermove', handlePointerMove);
+      container.removeEventListener('pointerdown', handlePointerDown);
     };
   }, [afterImgUrl, containerRef, cursorDotRef]);
 

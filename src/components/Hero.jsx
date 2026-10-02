@@ -1,11 +1,41 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import LiquidRevealCanvas from './effects/LiquidRevealCanvas';
 import EncryptedText from './effects/EncryptedText';
 import { GradientButton } from '@/components/ui/gradient-button';
 
+// Cloudinary delivers a right-sized WebP/AVIF instead of the 8K PNG originals
+// (2.7 MB + 7 MB). Both images MUST keep identical framing so the liquid reveal
+// lines up 1:1 — they share the same transform and object-fit: cover math.
+const CLD = 'https://res.cloudinary.com/dvfshzhp/image/upload';
+const BASE_ID = 'v1788253096/main_selected_picture_8K_upscaled.png';
+const AFTER_ID = 'v1788281218/final_base_2.png';
+const cld = (id, w) => `${CLD}/f_auto,q_auto,w_${w}/${id}`;
+const WIDTHS = [640, 960, 1280, 1920, 2560, 3840];
+
+function pickRevealWidth() {
+  if (typeof window === 'undefined') return 1920;
+  const need = Math.max(window.innerWidth, window.innerHeight * (16 / 9)) * Math.min(window.devicePixelRatio || 1, 2);
+  return WIDTHS.find((w) => w >= need) || WIDTHS[WIDTHS.length - 1];
+}
+
 export default function Hero({ isLoaderFinished, onOpenModal }) {
   const containerRef = useRef(null);
   const cursorDotRef = useRef(null);
+  const statusRef = useRef(null);
+  const revealWidthRef = useRef(pickRevealWidth());
+
+  // Expose the real status-bar height so the floating brand / content padding
+  // never overlap it at any font size or device.
+  useEffect(() => {
+    const el = statusRef.current;
+    const host = containerRef.current;
+    if (!el || !host) return;
+    const apply = () => host.style.setProperty('--hero-status-h', `${el.offsetHeight}px`);
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const handleBrandClick = () => {
     if (window.scrollToId) {
@@ -20,12 +50,16 @@ export default function Hero({ isLoaderFinished, onOpenModal }) {
       {/* Liquid Reveal Background */}
       <div className="hero-reveal-bg">
         <img
-          src="https://res.cloudinary.com/dvfshzhp/image/upload/v1788253096/main_selected_picture_8K_upscaled.png"
+          src={cld(BASE_ID, 1920)}
+          srcSet={WIDTHS.map((w) => `${cld(BASE_ID, w)} ${w}w`).join(', ')}
+          sizes="(orientation: portrait) 190vh, 100vw"
           alt="Amit Hota portfolio hero base"
           id="heroBaseImg"
+          fetchpriority="high"
+          decoding="async"
         />
         <LiquidRevealCanvas
-          afterImgUrl="https://res.cloudinary.com/dvfshzhp/image/upload/v1788281218/final_base_2.png"
+          afterImgUrl={cld(AFTER_ID, revealWidthRef.current)}
           containerRef={containerRef}
           cursorDotRef={cursorDotRef}
         />
@@ -93,7 +127,7 @@ export default function Hero({ isLoaderFinished, onOpenModal }) {
       </div>
 
       {/* Hero Status Bar */}
-      <div className={`hero-status ${isLoaderFinished ? 'revealed' : ''}`} id="heroStatus">
+      <div className={`hero-status ${isLoaderFinished ? 'revealed' : ''}`} id="heroStatus" ref={statusRef}>
         <div className="shell hero-status-inner">
           <span>Available for Q2/Q3 roles</span>
           <span className="hero-status-center">Backend · Cloud · Systems · AI</span>

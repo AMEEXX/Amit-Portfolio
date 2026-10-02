@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useInView } from 'motion/react';
 import { CanvasRevealEffect } from '@/components/ui/canvas-reveal-effect';
 
@@ -18,14 +18,37 @@ const Icon = ({ className, ...rest }) => (
 );
 
 // ── Card (exact Aceternity canvas-reveal-effect-demo structure) ──
+function useCanHover() {
+  const [canHover, setCanHover] = useState(true);
+  useEffect(() => {
+    const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const update = () => setCanHover(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+  return canHover;
+}
+
 const Card = ({ title, subtitle, description, logoSrc, logoAlt, logoStyle, tags, children }) => {
   const [hovered, setHovered] = useState(false);
+  const canHover = useCanHover();
+  // Touch devices have no hover: tap toggles the card open/closed.
+  const active = hovered;
+  const toggle = () => { if (!canHover) setHovered((v) => !v); };
 
   return (
     <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className="border border-white/[0.2] group/canvas-card flex items-center justify-center max-w-md w-full mx-auto p-6 relative h-[42rem]"
+      onMouseEnter={() => canHover && setHovered(true)}
+      onMouseLeave={() => canHover && setHovered(false)}
+      onClick={toggle}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setHovered((v) => !v); } }}
+      role="button"
+      tabIndex={0}
+      aria-expanded={active}
+      aria-label={`${title} — ${subtitle}`}
+      data-active={active ? 'true' : 'false'}
+      className="work-card border border-white/[0.2] group/canvas-card flex items-center justify-center max-w-md w-full mx-auto p-5 sm:p-6 relative min-h-[34rem] sm:min-h-[38rem] lg:min-h-[42rem] cursor-pointer select-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/60"
     >
       {/* Exact corner icons from demo */}
       <Icon className="absolute h-6 w-6 -top-3 -left-3 text-white" />
@@ -35,7 +58,7 @@ const Card = ({ title, subtitle, description, logoSrc, logoAlt, logoStyle, tags,
 
       {/* Canvas reveal — exact from demo */}
       <AnimatePresence>
-        {hovered && (
+        {active && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -50,22 +73,28 @@ const Card = ({ title, subtitle, description, logoSrc, logoAlt, logoStyle, tags,
       <div className="relative z-20 w-full text-center h-full flex flex-col justify-center items-center">
 
         {/* Logo: centered vertically on initial state, slides up + fades out on hover */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none group-hover/canvas-card:opacity-0 group-hover/canvas-card:-translate-y-4 transition duration-300 z-30">
+        <div className="work-card-logo absolute inset-0 flex items-center justify-center pointer-events-none transition duration-300 z-30 px-6">
           <img
             src={logoSrc}
             alt={logoAlt}
             style={logoStyle}
+            draggable={false}
           />
         </div>
+        {!canHover && (
+          <span className="work-card-hint absolute bottom-5 inset-x-0 text-center text-[11px] uppercase tracking-[0.15em] text-white/40 pointer-events-none transition duration-300 z-30">
+            Tap to view details
+          </span>
+        )}
 
         {/* Company name — fades in + slides up on hover */}
-        <h2 className="text-white text-2xl opacity-0 group-hover/canvas-card:opacity-100 relative z-10 font-bold group-hover/canvas-card:-translate-y-2 transition duration-200 mt-4">
+        <h2 className="work-reveal text-white text-xl sm:text-2xl relative z-10 font-bold transition duration-200 mt-4">
           {title}
         </h2>
 
         {/* Role subtitle */}
         <p
-          className="text-[17px] font-bold text-white/95 opacity-0 group-hover/canvas-card:opacity-100 transition duration-300 mt-1"
+          className="work-reveal text-[15px] sm:text-[17px] font-bold text-white/95 transition duration-300 mt-1"
           style={{ transitionDelay: '50ms' }}
         >
           {subtitle}
@@ -73,11 +102,11 @@ const Card = ({ title, subtitle, description, logoSrc, logoAlt, logoStyle, tags,
 
         {/* Highlights — appear after title */}
         <ul
-          className="opacity-0 group-hover/canvas-card:opacity-100 transition duration-300 mt-4 space-y-2 text-left px-2"
+          className="work-reveal transition duration-300 mt-4 space-y-2 text-left px-0 sm:px-2"
           style={{ transitionDelay: '80ms' }}
         >
           {description.map((line, i) => (
-            <li key={i} className="flex gap-2.5 items-start text-base font-semibold text-white drop-shadow-md leading-relaxed">
+            <li key={i} className="flex gap-2.5 items-start text-sm sm:text-base font-semibold text-white drop-shadow-md leading-relaxed">
               <span className="mt-[8px] w-1.5 h-1.5 rounded-full bg-white/90 shrink-0" />
               {line}
             </li>
@@ -87,7 +116,7 @@ const Card = ({ title, subtitle, description, logoSrc, logoAlt, logoStyle, tags,
         {/* Tags */}
         {tags && (
           <div 
-            className="flex flex-wrap items-center justify-start gap-3 mt-6 px-2 opacity-0 group-hover/canvas-card:opacity-100 transition duration-300"
+            className="work-reveal flex flex-wrap items-center justify-start gap-2 sm:gap-3 mt-6 px-0 sm:px-2 transition duration-300"
             style={{ transitionDelay: '100ms' }}
           >
             {tags.map((tag, i) => (
@@ -128,7 +157,7 @@ export default function WorkExperience() {
 
         {/* Cards — centered, Dell first, ideaForge second */}
         <motion.div
-          className="flex flex-col lg:flex-row items-center justify-center gap-6 mx-auto"
+          className="flex flex-col md:flex-row md:items-stretch items-center justify-center gap-8 md:gap-6 mx-auto"
           style={{ maxWidth: '58rem' }}
           initial={{ opacity: 0, y: 32 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -138,13 +167,11 @@ export default function WorkExperience() {
           <Card
             title="Dell Technologies"
             subtitle="Software Engineer Intern · 2026"
-            logoSrc="/dell-logo-new.png"
+            logoSrc="/dell-logo-trim.png"
             logoAlt="Dell Technologies"
             logoStyle={{
-              height: '80px',
-              width: 'auto',
-              maxWidth: '220px',
-              transform: 'scale(2.8)',
+              width: 'min(85%, 22rem)',
+              height: 'auto',
               objectFit: 'contain',
             }}
             description={[
@@ -165,13 +192,12 @@ export default function WorkExperience() {
           <Card
             title="ideaForge Technologies"
             subtitle="Software Engineer Intern · 2025"
-            logoSrc="/ideaforge-logo.png"
+            logoSrc="/ideaforge-logo-trim.png"
             logoAlt="ideaForge Technologies"
             logoStyle={{
-              height: '64px',
-              width: 'auto',
+              width: 'min(62%, 15rem)',
+              height: 'auto',
               objectFit: 'contain',
-              transform: 'scale(2.8)',
             }}
             description={[
               'Built backend services using Core Java, Spring Boot, FastAPI, and Rust integrating 3 RESTful APIs to process 100k+ geospatial points/day.',

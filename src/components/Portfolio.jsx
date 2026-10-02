@@ -90,7 +90,7 @@ export default function Portfolio() {
         </div>
 
         <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-10 mx-auto w-full max-w-[90rem]"
+          className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-10 mx-auto w-full max-w-[26rem] sm:max-w-[90rem]"
           initial={{ opacity: 0, y: 32 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.18 }}
@@ -100,7 +100,7 @@ export default function Portfolio() {
               key={i}
               className="h-full w-full group/card"
               backContent={
-                <div className="relative flex h-full w-full flex-col justify-between overflow-hidden rounded-[24px] border border-white/10 bg-gradient-to-b from-[#0d0d10] via-black to-black p-6 text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_20px_45px_-15px_rgba(0,0,0,0.7)]">
+                <div data-lenis-prevent className="relative flex h-full w-full flex-col justify-between overflow-x-hidden overflow-y-auto overscroll-contain rounded-[24px] border border-white/10 bg-gradient-to-b from-[#0d0d10] via-black to-black p-4 sm:p-6 text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_20px_45px_-15px_rgba(0,0,0,0.7)]">
                   {/* Aesthetic Grid Pattern */}
                   <div 
                     className="pointer-events-none absolute inset-0 z-0 opacity-60 mix-blend-screen"

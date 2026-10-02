@@ -91,7 +91,7 @@ export default function App() {
         <div className="starfield-zone" id="starfieldZone">
           <StarfieldScene />
 
-          <TracingBeam className="px-6">
+          <TracingBeam className="px-3 sm:px-6">
             {/* About */}
             <About />
 

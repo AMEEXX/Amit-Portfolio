@@ -10,11 +10,20 @@ export default function StarfieldScene() {
     // Respect reduced motion preference
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    const pinEl = canvas.parentElement; // .starfield-zone
+    // The zone is the tall scroll host; the canvas itself is only viewport-sized
+    // (position: sticky), so the GPU never allocates a page-tall framebuffer.
+    const pinEl = canvas.closest('.starfield-zone') || canvas.parentElement;
     if (!pinEl) return;
+
+    const isCoarse = window.matchMedia('(pointer: coarse)').matches;
+    const maxDpr = isCoarse ? 1.5 : 2;
+    const getDpr = () => Math.min(window.devicePixelRatio || 1, maxDpr);
+    const viewW = () => canvas.clientWidth || window.innerWidth;
+    const viewH = () => canvas.clientHeight || window.innerHeight;
 
     let animationFrameId = null;
     let disposed = false;
+    let cleanup = null;
 
     // ── Async init to match original dynamic import pattern ──
     (async () => {
@@ -29,8 +38,14 @@ export default function StarfieldScene() {
       if (disposed) return;
 
       // ── Renderer ──
-      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-      renderer.setPixelRatio(window.devicePixelRatio);
+      let renderer;
+      try {
+        renderer = new THREE.WebGLRenderer({ canvas, antialias: !isCoarse, powerPreference: 'high-performance' });
+      } catch (err) {
+        console.warn('Starfield disabled: WebGL unavailable', err);
+        return;
+      }
+      renderer.setPixelRatio(getDpr());
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.VSMShadowMap;
 
@@ -40,7 +55,7 @@ export default function StarfieldScene() {
       scene.fog = new THREE.Fog(0x000000, 0, 15);
 
       // ── Camera ──
-      const camera = new THREE.PerspectiveCamera(45, pinEl.clientWidth / pinEl.clientHeight, 0.1, 80);
+      const camera = new THREE.PerspectiveCamera(45, viewW() / viewH(), 0.1, 80);
       camera.position.set(0, 0, 5);
 
       const LAYERS = { NONE: 0, TORUS_SCENE: 1, BLOOM_SCENE: 2, ENTIRE_SCENE: 3 };
@@ -84,13 +99,13 @@ export default function StarfieldScene() {
       torusComposer.renderToScreen = false;
       torusComposer.addPass(renderScene);
       torusComposer.addPass(new ShaderPass(GammaCorrectionShader));
-      torusComposer.addPass(new UnrealBloomPass(new THREE.Vector2(pinEl.clientWidth, pinEl.clientHeight), 0.22, 0.2, 0));
+      torusComposer.addPass(new UnrealBloomPass(new THREE.Vector2(viewW(), viewH()), 0.22, 0.2, 0));
       torusComposer.addPass(new ShaderPass(CopyShader));
 
       const bloomComposer = new EffectComposer(renderer);
       bloomComposer.renderToScreen = false;
       bloomComposer.addPass(renderScene);
-      bloomComposer.addPass(new UnrealBloomPass(new THREE.Vector2(pinEl.clientWidth, pinEl.clientHeight), 0.4, 0.55, 0));
+      bloomComposer.addPass(new UnrealBloomPass(new THREE.Vector2(viewW(), viewH()), 0.4, 0.55, 0));
       bloomComposer.addPass(new ShaderPass(GammaCorrectionShader));
 
       const finalPass = new ShaderPass({
@@ -134,7 +149,7 @@ void main(){
       finalPass.uniforms.torusTexture.value = torusComposer.renderTarget1.texture;
 
       // ── Particle geometry (matches original exactly) ──
-      const count = 7500, depth = 30;
+      const count = isCoarse ? 4500 : 7500, depth = 30;
       const positions = new Float32Array(count * 3);
       const palette = new Float32Array(count);
       const bright = new Float32Array(count);
@@ -238,7 +253,7 @@ void main() {
       let active = false, lastMove = 0;
 
       function onPointerMove(e) {
-        const r = pinEl.getBoundingClientRect();
+        const r = canvas.getBoundingClientRect();
         ndc.x = ((e.clientX - r.left) / r.width) * 2 - 1;
         ndc.y = -((e.clientY - r.top) / r.height) * 2 + 1;
         active = true;
@@ -264,20 +279,30 @@ void main() {
       // ── Resize ──
       function onResize() {
         if (!pinEl || disposed) return;
-        const w = pinEl.clientWidth, h = pinEl.clientHeight;
-        renderer.setPixelRatio(window.devicePixelRatio);
+        const w = viewW(), h = viewH();
+        if (!w || !h) return;
+        const dpr = getDpr();
+        if (w === lastW && h === lastH && dpr === lastDpr) return;
+        lastW = w; lastH = h; lastDpr = dpr;
+        renderer.setPixelRatio(dpr);
         renderer.setSize(w, h, false);
         camera.aspect = w / h;
         camera.updateProjectionMatrix();
         [torusComposer, bloomComposer, finalComposer].forEach(c => {
-          c.setPixelRatio(window.devicePixelRatio);
+          c.setPixelRatio(dpr);
           c.setSize(w, h);
         });
       }
+      let lastW = 0, lastH = 0, lastDpr = 0;
 
       window.addEventListener('resize', onResize);
       const ro = new ResizeObserver(onResize);
-      ro.observe(pinEl);
+      ro.observe(canvas);
+
+      // Only render while the zone is on screen (saves battery on phones)
+      let zoneVisible = true;
+      const io = new IntersectionObserver(([entry]) => { zoneVisible = entry.isIntersecting; }, { rootMargin: '200px' });
+      io.observe(pinEl);
 
       // ── Animation loop ──
       let t0 = performance.now() / 1000;
@@ -288,6 +313,7 @@ void main() {
         animationFrameId = requestAnimationFrame(animate);
         const t = performance.now() / 1000;
         const dt = Math.min(0.05, t - t0); t0 = t;
+        if (!zoneVisible || document.hidden) return;
         uniforms.uTime.value = t;
 
         computeScrollTarget();
@@ -337,13 +363,14 @@ void main() {
       animate();
 
       // ── Cleanup ──
-      return () => {
+      cleanup = () => {
         disposed = true;
         if (animationFrameId) cancelAnimationFrame(animationFrameId);
         pinEl.removeEventListener('pointermove', onPointerMove);
         pinEl.removeEventListener('pointerleave', onPointerLeave);
         window.removeEventListener('resize', onResize);
         ro.disconnect();
+        io.disconnect();
         geometry.dispose();
         material.dispose();
         renderer.dispose();
@@ -353,8 +380,16 @@ void main() {
 
     // Return a no-op cleanup here; real cleanup is in the async IIFE above
     // We store the cleanup in a ref-based pattern
-    return () => { disposed = true; if (animationFrameId) cancelAnimationFrame(animationFrameId); };
+    return () => {
+      disposed = true;
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      if (cleanup) cleanup();
+    };
   }, []);
 
-  return <canvas ref={canvasRef} id="starfield-scene" />;
+  return (
+    <div className="starfield-track" aria-hidden="true">
+      <canvas ref={canvasRef} id="starfield-scene" />
+    </div>
+  );
 }

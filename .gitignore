@@ -29,3 +29,6 @@ dist-isolation
 *.njsproj
 *.sln
 *.sw?
+core
+core.*
+a.js

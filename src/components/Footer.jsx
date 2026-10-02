@@ -30,6 +30,10 @@ export default function Footer({ onOpenModal }) {
       if (onOpenModal) onOpenModal();
       return;
     }
+    if (window.scrollToId) {
+      window.scrollToId(id);
+      return;
+    }
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
@@ -87,7 +91,7 @@ export default function Footer({ onOpenModal }) {
             <div className="footer-col-title">Explore</div>
             <ul>
               <li><a href="#about" onClick={(e) => handleNavClick(e, 'about')}><span className="animated-link">About</span></a></li>
-              <li><a href="#experience" onClick={(e) => handleNavClick(e, 'experience')}><span className="animated-link">Experience</span></a></li>
+              <li><a href="#work-experience" onClick={(e) => handleNavClick(e, 'work-experience')}><span className="animated-link">Experience</span></a></li>
               <li><a href="#works" onClick={(e) => handleNavClick(e, 'works')}><span className="animated-link">Projects</span></a></li>
               <li><a href="#contact" className="footer-contact-link" onClick={(e) => handleNavClick(e, 'contact')}><span className="animated-link">Contact</span></a></li>
             </ul>
@@ -96,10 +100,10 @@ export default function Footer({ onOpenModal }) {
           <div className="footer-col">
             <div className="footer-col-title">Skills</div>
             <ul>
-              <li><a href="#services" onClick={(e) => handleNavClick(e, 'services')}><span className="animated-link">Backend Engineering</span></a></li>
-              <li><a href="#services" onClick={(e) => handleNavClick(e, 'services')}><span className="animated-link">Cloud &amp; DevOps</span></a></li>
-              <li><a href="#services" onClick={(e) => handleNavClick(e, 'services')}><span className="animated-link">AI &amp; Automation</span></a></li>
-              <li><a href="#services" onClick={(e) => handleNavClick(e, 'services')}><span className="animated-link">Competitive Programming</span></a></li>
+              <li><a href="#skills" onClick={(e) => handleNavClick(e, 'skills')}><span className="animated-link">Backend Engineering</span></a></li>
+              <li><a href="#skills" onClick={(e) => handleNavClick(e, 'skills')}><span className="animated-link">Cloud &amp; DevOps</span></a></li>
+              <li><a href="#skills" onClick={(e) => handleNavClick(e, 'skills')}><span className="animated-link">AI &amp; Automation</span></a></li>
+              <li><a href="#skills" onClick={(e) => handleNavClick(e, 'skills')}><span className="animated-link">Competitive Programming</span></a></li>
             </ul>
           </div>
 

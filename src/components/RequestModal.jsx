@@ -24,6 +24,19 @@ export default function RequestModal({ isOpen, onClose }) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
+  // Freeze the page behind the modal (Lenis + native) so only the form scrolls
+  useEffect(() => {
+    if (!isOpen) return;
+    const lenis = window.__lenis;
+    lenis?.stop();
+    const prev = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = 'hidden';
+    return () => {
+      lenis?.start();
+      document.documentElement.style.overflow = prev;
+    };
+  }, [isOpen]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -77,6 +90,10 @@ export default function RequestModal({ isOpen, onClose }) {
     <div
       className={`modal-backdrop ${isOpen ? 'open' : ''}`}
       id="modalBackdrop"
+      data-lenis-prevent
+      role="dialog"
+      aria-modal="true"
+      aria-hidden={!isOpen}
       onClick={(e) => {
         if (e.target.id === 'modalBackdrop') handleResetAndClose();
       }}

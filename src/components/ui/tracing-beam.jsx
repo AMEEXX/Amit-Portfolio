@@ -48,7 +48,7 @@ export const TracingBeam = ({ children, className }) => {
       className={cn("relative mx-auto h-full w-full", className)}
     >
       {/* The animated beam — positioned absolutely on the left edge */}
-      <div className="absolute top-3 left-0 md:left-2 pointer-events-none">
+      <div className="absolute top-3 -left-3 sm:left-0 md:left-2 pointer-events-none">
         <motion.div
           transition={{ duration: 0.2, delay: 0.5 }}
           animate={{

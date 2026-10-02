@@ -31,6 +31,19 @@ export default function Navbar({ onOpenModal }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e) => e.key === 'Escape' && setIsOpen(false);
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const onMq = () => mq.matches && setIsOpen(false);
+    window.addEventListener('keydown', onKey);
+    mq.addEventListener('change', onMq);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      mq.removeEventListener('change', onMq);
+    };
+  }, [isOpen]);
+
   const handleNavClick = (e, id) => {
     e.preventDefault();
     setIsOpen(false);
@@ -110,7 +123,7 @@ export default function Navbar({ onOpenModal }) {
         </button>
 
         {/* Mobile Sheet */}
-        <div className="navbar-mobile-sheet">
+        <div className="navbar-mobile-sheet" data-lenis-prevent>
           {[
             { id: 'home', label: 'Home' },
             { id: 'about', label: 'About' },
