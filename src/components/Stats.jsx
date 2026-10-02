@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 
 const STATS_DATA = [
-  { value: 800, suffix: '+', label: 'Problems solved' },
+  { value: 900, suffix: '+', label: 'Questions solved' },
   { value: 1900, suffix: '', label: 'LeetCode rating' },
-  { value: 1800, suffix: '', label: 'Codeforces rating' },
+  { value: 1654, suffix: '', label: 'Codeforces rating' },
   { value: 6, suffix: '+', label: 'Hackathon finalist' },
 ];
 
