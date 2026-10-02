@@ -21,29 +21,13 @@ function pickRevealWidth() {
 export default function Hero({ isLoaderFinished, onOpenModal }) {
   const containerRef = useRef(null);
   const cursorDotRef = useRef(null);
-  const statusRef = useRef(null);
   const revealWidthRef = useRef(pickRevealWidth());
 
-  // Expose the real status-bar height so the floating brand / content padding
-  // never overlap it at any font size or device.
   useEffect(() => {
-    const el = statusRef.current;
-    const host = containerRef.current;
-    if (!el || !host) return;
-    const apply = () => host.style.setProperty('--hero-status-h', `${el.offsetHeight}px`);
-    apply();
-    const ro = new ResizeObserver(apply);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  const handleBrandClick = () => {
-    if (window.scrollToId) {
-      window.scrollToId('home');
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (containerRef.current) {
+      containerRef.current.style.setProperty('--hero-status-h', '0px');
     }
-  };
+  }, []);
 
   return (
     <section className="hero" id="home" ref={containerRef}>
@@ -125,25 +109,6 @@ export default function Hero({ isLoaderFinished, onOpenModal }) {
         </div>
         <div className="hero-right" />
       </div>
-
-      {/* Hero Status Bar */}
-      <div className={`hero-status ${isLoaderFinished ? 'revealed' : ''}`} id="heroStatus" ref={statusRef}>
-        <div className="shell hero-status-inner">
-          <span>Available for Q2/Q3 roles</span>
-          <span className="hero-status-center">Backend · Cloud · Systems · AI</span>
-          <span className="hero-status-right">
-            Scroll to explore <span>↓</span>
-          </span>
-        </div>
-      </div>
-
-      {/* Floating Brand Button */}
-      <button className="hero-brand-floating" id="brandBtn" aria-label="Scroll to top" onClick={handleBrandClick}>
-        <svg viewBox="0 0 48 48" fill="currentColor">
-          <path d="M24 2c2.2 13.8 7.9 19.6 22 22-14.1 2.4-19.8 8.2-22 22-2.2-13.8-7.9-19.6-22-22 14.1-2.4 19.8-8.2 22-22Z" />
-        </svg>
-        Amit Hota
-      </button>
     </section>
   );
 }
