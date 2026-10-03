@@ -1,4 +1,4 @@
-# ⚡ AMIT KUMAR HOTA — Interactive Engineering Portfolio
+# AMIT KUMAR HOTA - Interactive Portfolio
 
 <div align="center">
 
